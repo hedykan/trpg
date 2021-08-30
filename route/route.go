@@ -8,8 +8,8 @@ type HandlerFunc func(http.ResponseWriter, *http.Request)
 
 func RouteInit() {
 	http.HandleFunc("/", index)
-	http.HandleFunc("/store/list", storeList)
-	http.HandleFunc("/store/get", storeGet)
+	http.HandleFunc("/store/list", storyList)
+	http.HandleFunc("/store/get", storyGet)
 }
 
 func res(data interface{}) map[string]interface{} {

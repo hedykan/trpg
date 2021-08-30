@@ -18,6 +18,6 @@ func main() {
 }
 
 func mainInit() {
-	con.StoreInit()
+	con.StoryInit()
 	route.RouteInit()
 }

@@ -7,51 +7,51 @@ import (
 )
 
 // 内容名称要大写才能导出
-type StoreNode struct {
+type StoryNode struct {
 	Id     int
 	Val    string
 	Input  []int
 	Output []int
 }
 
-type storeNodeMap map[int]*StoreNode
+type StoryNodeMap map[int]*StoryNode
 
 // 开辟空间后暂时不会被回收
-var NodeMap storeNodeMap
-var nodeArr []StoreNode
+var NodeMap StoryNodeMap
+var NodeArr []StoryNode
 
-func StoreInit() []StoreNode {
-	NodeMap = make(map[int]*StoreNode)
+func StoryInit() []StoryNode {
+	NodeMap = make(map[int]*StoryNode)
 	f, err := ioutil.ReadFile("file/example.json")
 	if err != nil {
 		fmt.Println("read fail", err)
 	}
-	err = json.Unmarshal(f, &nodeArr)
+	err = json.Unmarshal(f, &NodeArr)
 	if err != nil {
 		fmt.Println("json decode fail", err)
 	}
-	for i := 0; i < len(nodeArr); i++ {
-		NodeMap[nodeArr[i].Id] = &nodeArr[i]
+	for i := 0; i < len(NodeArr); i++ {
+		NodeMap[NodeArr[i].Id] = &NodeArr[i]
 	}
-	return nodeArr
+	return NodeArr
 }
 
-func StoreList() []StoreNode {
-	return nodeArr
+func StoryList() []StoryNode {
+	return NodeArr
 }
 
-func StoreNodeGet(id int) StoreNode {
+func StoryNodeGet(id int) StoryNode {
 	return *NodeMap[id]
 }
 
 // 新增故事节点
-func StoreNodeAdd(val string, input []int, output []int) int {
-	var node StoreNode
+func StoryNodeAdd(val string, input []int, output []int) int {
+	var node StoryNode
 	node.Id = 0
 	node.Val = val
 	node.Input = input
 	node.Output = output
-	for _, value := range nodeArr {
+	for _, value := range NodeArr {
 		if value.Id > node.Id {
 			node.Id = value.Id
 		}
@@ -60,19 +60,19 @@ func StoreNodeAdd(val string, input []int, output []int) int {
 
 	// 存储新节点
 	NodeMap[node.Id] = &node
-	nodeArr = append(nodeArr, node)
-	storeSave()
+	NodeArr = append(NodeArr, node)
+	StorySave()
 
 	return node.Id
 }
 
 // 插入链接故事节点
-func StoreNodeLink(val string, linkInput int, linkOutput int) {
+func StoryNodeLink(val string, linkInput int, linkOutput int) {
 	// 生成新节点
-	storeId := StoreNodeAdd(val, []int{linkInput}, []int{linkOutput})
+	storyId := StoryNodeAdd(val, []int{linkInput}, []int{linkOutput})
 	// 断开旧链接
-	NodeMap[linkInput].Output = append(NodeMap[linkInput].Output, storeId)
-	NodeMap[linkOutput].Input = append(NodeMap[linkOutput].Input, storeId)
+	NodeMap[linkInput].Output = append(NodeMap[linkInput].Output, storyId)
+	NodeMap[linkOutput].Input = append(NodeMap[linkOutput].Input, storyId)
 	for i := 0; i < len(NodeMap[linkInput].Output); i++ {
 		if linkOutput == NodeMap[linkInput].Output[i] {
 			// 删除连接输入节点的原输出节点
@@ -85,11 +85,11 @@ func StoreNodeLink(val string, linkInput int, linkOutput int) {
 			NodeMap[linkOutput].Input = append(NodeMap[linkOutput].Input[:i], NodeMap[linkOutput].Input[i+1:]...)
 		}
 	}
-	storeSave()
+	StorySave()
 }
 
-func storeSave() {
-	str, err := json.Marshal(nodeArr)
+func StorySave() {
+	str, err := json.Marshal(NodeArr)
 	if err != nil {
 		fmt.Println("transfer err", err)
 	}
