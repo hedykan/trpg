@@ -20,9 +20,27 @@ type StoryNodeMap map[int]*StoryNode
 var NodeMap StoryNodeMap
 var NodeArr []StoryNode
 
+func StoryCreate() {
+	storyArr := make([]StoryNode, 2)
+	storyArr[0] = StoryNode{
+		Id:     0,
+		Input:  []int{},
+		Output: []int{1},
+		Val:    "start",
+	}
+	storyArr[1] = StoryNode{
+		Id:     1,
+		Input:  []int{0},
+		Output: []int{},
+		Val:    "end",
+	}
+	storySave(storyArr)
+}
+
+// 故事整体初始化
 func StoryInit() []StoryNode {
 	NodeMap = make(map[int]*StoryNode)
-	f, err := ioutil.ReadFile("file/example.json")
+	f, err := ioutil.ReadFile("file/story_example.json")
 	if err != nil {
 		fmt.Println("read fail", err)
 	}
@@ -36,10 +54,12 @@ func StoryInit() []StoryNode {
 	return NodeArr
 }
 
+// 故事整体展示
 func StoryList() []StoryNode {
 	return NodeArr
 }
 
+// 故事节点获取
 func StoryNodeGet(id int) StoryNode {
 	return *NodeMap[id]
 }
@@ -61,7 +81,7 @@ func StoryNodeAdd(val string, input []int, output []int) int {
 	// 存储新节点
 	NodeMap[node.Id] = &node
 	NodeArr = append(NodeArr, node)
-	StorySave()
+	storySave(NodeArr)
 
 	return node.Id
 }
@@ -85,13 +105,23 @@ func StoryNodeLink(val string, linkInput int, linkOutput int) {
 			NodeMap[linkOutput].Input = append(NodeMap[linkOutput].Input[:i], NodeMap[linkOutput].Input[i+1:]...)
 		}
 	}
-	StorySave()
+	storySave(NodeArr)
 }
 
-func StorySave() {
-	str, err := json.Marshal(NodeArr)
+func storySave(nodeArr []StoryNode) {
+	str, err := json.Marshal(nodeArr)
 	if err != nil {
 		fmt.Println("transfer err", err)
 	}
-	ioutil.WriteFile("file/example.json", str, 0644)
+	ioutil.WriteFile("file/story_example.json", str, 0644)
+}
+
+func searchId(idArr []int, id int) int {
+	var i int
+	for i = 0; i < len(idArr); i++ {
+		if id == idArr[i] {
+			return i
+		}
+	}
+	return -1
 }

@@ -19,5 +19,6 @@ func main() {
 
 func mainInit() {
 	con.StoryInit()
+	con.RunInit()
 	route.RouteInit()
 }
