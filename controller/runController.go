@@ -16,9 +16,10 @@ var Status RunStatus
 // 跑团状态新建
 func RunStatusCreate() {
 	status_new := RunStatus{
-		NowStoryNode:    1,
-		RecordStoryNode: []int{},
+		NowStoryNode:    0,
+		RecordStoryNode: []int{0},
 	}
+	Status = status_new
 	runStatusSave(status_new)
 }
 
@@ -37,6 +38,10 @@ func RunInit() {
 // 跑团状态展示
 func RunStatusList() RunStatus {
 	return Status
+}
+
+func RunNowNodeGet() StoryNode {
+	return StoryNodeGet(Status.NowStoryNode)
 }
 
 // 步骤执行

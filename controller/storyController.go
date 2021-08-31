@@ -64,19 +64,33 @@ func StoryNodeGet(id int) StoryNode {
 	return *NodeMap[id]
 }
 
-// 新增故事节点
+// 新增故事节点 TODO 给输入输出节点新增节点
 func StoryNodeAdd(val string, input []int, output []int) int {
 	var node StoryNode
-	node.Id = 0
-	node.Val = val
-	node.Input = input
-	node.Output = output
+	node = StoryNode{
+		Id:     0,
+		Input:  input,
+		Output: output,
+		Val:    val,
+	}
 	for _, value := range NodeArr {
 		if value.Id > node.Id {
 			node.Id = value.Id
 		}
 	}
 	node.Id += 1
+
+	// 添加到目标输入节点和目标输出节点
+	for i := 0; i < len(input); i++ {
+		if searchId(NodeMap[input[i]].Output, node.Id) == -1 {
+			NodeMap[input[i]].Output = append(NodeMap[input[i]].Output, node.Id)
+		}
+	}
+	for i := 0; i < len(output); i++ {
+		if searchId(NodeMap[output[i]].Input, node.Id) == -1 {
+			NodeMap[output[i]].Input = append(NodeMap[output[i]].Input, node.Id)
+		}
+	}
 
 	// 存储新节点
 	NodeMap[node.Id] = &node
@@ -111,7 +125,7 @@ func StoryNodeLink(val string, linkInput int, linkOutput int) {
 func storySave(nodeArr []StoryNode) {
 	str, err := json.Marshal(nodeArr)
 	if err != nil {
-		fmt.Println("transfer err", err)
+		panic(err)
 	}
 	ioutil.WriteFile("file/story_example.json", str, 0644)
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	con "github.com/trpg/controller"
@@ -13,6 +14,7 @@ type HandlerFunc func(http.ResponseWriter, *http.Request)
 func main() {
 	port := ":12345"
 	mainInit()
+	fmt.Printf("server port%s", port)
 	http.ListenAndServe(port, nil)
 	return
 }

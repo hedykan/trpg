@@ -17,3 +17,8 @@
 2. 故事节点获取`/story/get?id`
 3. 故事运行状态获取`/run/status_list`
 4. 故事运行执行`/run/step?id`
+```bash
+# 示例
+$ curl http://127.0.0.1:12345/store/list
+{"code":200,"data":[{"Id":1,"Val":"hello world","Input":[0,1],"Output":[2]},{"Id":2,"Val":"hello world","Input":[0,1],"Output":[2]}],"msg":"ok"}
+```

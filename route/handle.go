@@ -1,8 +1,6 @@
 package route
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -10,54 +8,48 @@ import (
 )
 
 func index(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	enc := json.NewEncoder(w)
-	con.StoryCreate()
-	con.RunStatusCreate()
-	res := res(nil)
-	enc.Encode(res)
+	// con.StoryCreate()
+	// con.RunStatusCreate()
+	// con.StoryNodeAdd("选项1", []int{0}, []int{1})
+	// con.StoryNodeAdd("选项2", []int{0}, []int{1})
+	// con.StoryNodeLink("后续选项1", 2, 1)
+	// con.StoryNodeLink("后续选项2", 3, 1)
+	resMiddle(w, r, nil)
 }
 
 func storyList(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	enc := json.NewEncoder(w)
-	res := res(con.StoryList())
-	enc.Encode(res)
+	resMiddle(w, r, con.StoryList())
 }
 
 func storyGet(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	enc := json.NewEncoder(w)
 	query := get(r)
 	id, err := strconv.Atoi(query["id"])
 	if err != nil {
-		fmt.Println("transfe err", err)
+		panic(err)
 	}
-	res := res(con.StoryNodeGet(id))
-	enc.Encode(res)
+	resMiddle(w, r, con.StoryNodeGet(id))
+}
+
+func runStatusReset(w http.ResponseWriter, r *http.Request) {
+	con.RunStatusCreate()
+	resMiddle(w, r, nil)
 }
 
 func runStatusList(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	enc := json.NewEncoder(w)
-	res := res(con.RunStatusList())
-	enc.Encode(res)
+	resMiddle(w, r, con.RunStatusList())
+}
+
+func runNowNodeGet(w http.ResponseWriter, r *http.Request) {
+	resMiddle(w, r, con.RunNowNodeGet())
 }
 
 func runStep(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	enc := json.NewEncoder(w)
 	query := get(r)
 	id, err := strconv.Atoi(query["id"])
 	if err != nil {
-		fmt.Println("transfe err", err)
+		panic(err)
+	} else {
+		con.RunStep(id)
 	}
-	con.RunStep(id)
-	res := res(nil)
-	enc.Encode(res)
+	resMiddle(w, r, nil)
 }
