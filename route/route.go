@@ -13,6 +13,7 @@ func RouteInit() {
 	http.HandleFunc("/story/list", storyList)
 	http.HandleFunc("/story/get", storyGet)
 	http.HandleFunc("/story/node_add", storyNodeAdd)
+	http.HandleFunc("/story/node_link", storyNodeLink)
 
 	http.HandleFunc("/run/status_reset", runStatusReset)
 	http.HandleFunc("/run/status_list", runStatusList)

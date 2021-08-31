@@ -37,6 +37,10 @@ func StoryCreate() {
 		Output: []int{},
 		Val:    "end",
 	}
+	NodeArr = storyArr
+	for i := 0; i < len(NodeArr); i++ {
+		NodeMap[NodeArr[i].Id] = &NodeArr[i]
+	}
 	storySave(storyArr)
 }
 
@@ -106,10 +110,8 @@ func StoryNodeAdd(val string, input []int, output []int) int {
 // 插入链接故事节点
 func StoryNodeLink(val string, linkInput int, linkOutput int) {
 	// 生成新节点
-	storyId := StoryNodeAdd(val, []int{linkInput}, []int{linkOutput})
+	StoryNodeAdd(val, []int{linkInput}, []int{linkOutput})
 	// 断开旧链接
-	NodeMap[linkInput].Output = append(NodeMap[linkInput].Output, storyId)
-	NodeMap[linkOutput].Input = append(NodeMap[linkOutput].Input, storyId)
 	for i := 0; i < len(NodeMap[linkInput].Output); i++ {
 		if linkOutput == NodeMap[linkInput].Output[i] {
 			// 删除连接输入节点的原输出节点

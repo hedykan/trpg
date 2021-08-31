@@ -1,7 +1,6 @@
 package route
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -9,7 +8,7 @@ import (
 )
 
 func index(w http.ResponseWriter, r *http.Request) {
-	// con.StoryCreate()
+	con.StoryCreate()
 	// con.RunStatusCreate()
 	// con.StoryNodeAdd("选项1", []int{0}, []int{1})
 	// con.StoryNodeAdd("选项2", []int{0}, []int{1})
@@ -33,12 +32,24 @@ func storyGet(w http.ResponseWriter, r *http.Request) {
 
 func storyNodeAdd(w http.ResponseWriter, r *http.Request) {
 	var query struct {
-		val    string
-		input  []int
-		output []int
+		Val    string
+		Input  []int
+		Output []int
 	}
 	postJson(r, &query)
-	fmt.Println("val:", query.input)
+	con.StoryNodeAdd(query.Val, query.Input, query.Output)
+	resMiddle(w, r, nil)
+}
+
+func storyNodeLink(w http.ResponseWriter, r *http.Request) {
+	var query struct {
+		Val    string
+		Input  int
+		Output int
+	}
+	postJson(r, &query)
+	con.StoryNodeLink(query.Val, query.Input, query.Output)
+	resMiddle(w, r, nil)
 }
 
 func runStatusReset(w http.ResponseWriter, r *http.Request) {
