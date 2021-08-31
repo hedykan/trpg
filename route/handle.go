@@ -1,6 +1,7 @@
 package route
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -28,6 +29,16 @@ func storyGet(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	resMiddle(w, r, con.StoryNodeGet(id))
+}
+
+func storyNodeAdd(w http.ResponseWriter, r *http.Request) {
+	var query struct {
+		val    string
+		input  []int
+		output []int
+	}
+	postJson(r, &query)
+	fmt.Println("val:", query.input)
 }
 
 func runStatusReset(w http.ResponseWriter, r *http.Request) {

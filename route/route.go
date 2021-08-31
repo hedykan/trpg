@@ -2,6 +2,7 @@ package route
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -11,6 +12,8 @@ func RouteInit() {
 	http.HandleFunc("/", index)
 	http.HandleFunc("/story/list", storyList)
 	http.HandleFunc("/story/get", storyGet)
+	http.HandleFunc("/story/node_add", storyNodeAdd)
+
 	http.HandleFunc("/run/status_reset", runStatusReset)
 	http.HandleFunc("/run/status_list", runStatusList)
 	http.HandleFunc("/run/now_node_get", runNowNodeGet)
@@ -33,6 +36,25 @@ func get(r *http.Request) map[string]string {
 	}
 
 	return res
+}
+
+func postForm(r *http.Request, query []string) map[string]interface{} {
+	var res = make(map[string]interface{})
+	for i := 0; i < len(query); i++ {
+		res[query[i]] = r.PostFormValue(query[i])
+	}
+	return res
+}
+
+func postJson(r *http.Request, obj interface{}) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		panic(err)
+	}
+	err = json.Unmarshal(body, obj)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func resMiddle(w http.ResponseWriter, r *http.Request, oper interface{}) {

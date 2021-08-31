@@ -6,7 +6,10 @@ import (
 	"io/ioutil"
 )
 
-// 内容名称要大写才能导出
+/*
+	底层思想是操作一个故事表，根据输入输出节点决定故事走向
+*/
+
 type StoryNode struct {
 	Id     int
 	Val    string

@@ -14,7 +14,7 @@ type HandlerFunc func(http.ResponseWriter, *http.Request)
 func main() {
 	port := ":12345"
 	mainInit()
-	fmt.Printf("server port%s", port)
+	fmt.Printf("server port%s\n", port)
 	http.ListenAndServe(port, nil)
 	return
 }

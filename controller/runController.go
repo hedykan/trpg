@@ -6,6 +6,10 @@ import (
 	"io/ioutil"
 )
 
+/*
+	底层思想是维护一个当前跑团状态表，用以记录当前跑团的路径和经过
+*/
+
 type RunStatus struct {
 	NowStoryNode    int
 	RecordStoryNode []int
