@@ -61,6 +61,11 @@ func RunStep(nodeId int) {
 	runStatusSave(Status)
 }
 
+// 步骤回退
+func RunReturn(nodeId int) {
+
+}
+
 // 保存跑团状态
 func runStatusSave(status RunStatus) {
 	str, err := json.Marshal(status)

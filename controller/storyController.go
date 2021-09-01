@@ -127,6 +127,16 @@ func StoryNodeLink(val string, linkInput int, linkOutput int) {
 	storySave(NodeArr)
 }
 
+// 故事节点修改
+func StoryNodeEdit() {
+
+}
+
+// 故事节点删除
+func StoryNodeDelete() {
+
+}
+
 func storySave(nodeArr []StoryNode) {
 	str, err := json.Marshal(nodeArr)
 	if err != nil {
