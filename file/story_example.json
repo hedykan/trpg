@@ -1,1 +1,1 @@
-[{"Id":0,"Val":"start","Input":[],"Output":[1,2]},{"Id":1,"Val":"end","Input":[0,3],"Output":[]},{"Id":2,"Val":"新增节点1","Input":[0],"Output":[3]},{"Id":3,"Val":"新增节点1","Input":[2],"Output":[1]}]
+[{"Id":0,"Val":"start","Input":[],"Output":[1,2]},{"Id":1,"Val":"end","Input":[0,2],"Output":[]},{"Id":2,"Val":"选项1","Input":[0],"Output":[1]},{"Id":3,"Val":"选项2","Input":[0],"Output":[1]},{"Id":4,"Val":"后续选项1","Input":[2],"Output":[1]},{"Id":5,"Val":"后续选项2","Input":[3],"Output":[1]}]

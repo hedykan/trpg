@@ -63,7 +63,12 @@ func RunStep(nodeId int) {
 
 // 步骤回退
 func RunReturn(nodeId int) {
-
+	index := searchId(Status.RecordStoryNode, nodeId)
+	if index != -1 {
+		Status.NowStoryNode = nodeId
+		Status.RecordStoryNode = Status.RecordStoryNode[:index+1]
+		runStatusSave(Status)
+	}
 }
 
 // 保存跑团状态

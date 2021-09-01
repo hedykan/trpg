@@ -8,17 +8,17 @@ import (
 )
 
 func index(w http.ResponseWriter, r *http.Request) {
-	con.StoryCreate()
+	// con.StoryCreate()
 	// con.RunStatusCreate()
 	// con.StoryNodeAdd("选项1", []int{0}, []int{1})
 	// con.StoryNodeAdd("选项2", []int{0}, []int{1})
 	// con.StoryNodeLink("后续选项1", 2, 1)
 	// con.StoryNodeLink("后续选项2", 3, 1)
-	resMiddle(w, r, nil)
+	resInput(w, r, nil)
 }
 
 func storyList(w http.ResponseWriter, r *http.Request) {
-	resMiddle(w, r, con.StoryList())
+	resInput(w, r, con.StoryList())
 }
 
 func storyGet(w http.ResponseWriter, r *http.Request) {
@@ -27,7 +27,7 @@ func storyGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	resMiddle(w, r, con.StoryNodeGet(id))
+	resInput(w, r, con.StoryNodeGet(id))
 }
 
 func storyNodeAdd(w http.ResponseWriter, r *http.Request) {
@@ -38,7 +38,7 @@ func storyNodeAdd(w http.ResponseWriter, r *http.Request) {
 	}
 	postJson(r, &query)
 	con.StoryNodeAdd(query.Val, query.Input, query.Output)
-	resMiddle(w, r, nil)
+	resInput(w, r, nil)
 }
 
 func storyNodeLink(w http.ResponseWriter, r *http.Request) {
@@ -49,20 +49,20 @@ func storyNodeLink(w http.ResponseWriter, r *http.Request) {
 	}
 	postJson(r, &query)
 	con.StoryNodeLink(query.Val, query.Input, query.Output)
-	resMiddle(w, r, nil)
+	resInput(w, r, nil)
 }
 
 func runStatusReset(w http.ResponseWriter, r *http.Request) {
 	con.RunStatusCreate()
-	resMiddle(w, r, nil)
+	resInput(w, r, nil)
 }
 
 func runStatusList(w http.ResponseWriter, r *http.Request) {
-	resMiddle(w, r, con.RunStatusList())
+	resInput(w, r, con.RunStatusList())
 }
 
 func runNowNodeGet(w http.ResponseWriter, r *http.Request) {
-	resMiddle(w, r, con.RunNowNodeGet())
+	resInput(w, r, con.RunNowNodeGet())
 }
 
 func runStep(w http.ResponseWriter, r *http.Request) {
@@ -73,5 +73,15 @@ func runStep(w http.ResponseWriter, r *http.Request) {
 	} else {
 		con.RunStep(id)
 	}
-	resMiddle(w, r, nil)
+	resInput(w, r, nil)
+}
+
+func runReturn(w http.ResponseWriter, r *http.Request) {
+	query := get(r)
+	id, err := strconv.Atoi(query["id"])
+	if err != nil {
+		panic(err)
+	}
+	con.RunReturn(id)
+	resInput(w, r, nil)
 }

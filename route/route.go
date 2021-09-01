@@ -9,16 +9,17 @@ import (
 type HandlerFunc func(http.ResponseWriter, *http.Request)
 
 func RouteInit() {
-	http.HandleFunc("/", index)
-	http.HandleFunc("/story/list", storyList)
-	http.HandleFunc("/story/get", storyGet)
-	http.HandleFunc("/story/node_add", storyNodeAdd)
-	http.HandleFunc("/story/node_link", storyNodeLink)
+	http.Handle("/", middleware(index))
+	http.Handle("/story/list", middleware(storyList))
+	http.Handle("/story/get", middleware(storyGet))
+	http.Handle("/story/node_add", middleware(storyNodeAdd))
+	http.Handle("/story/node_link", middleware(storyNodeLink))
 
-	http.HandleFunc("/run/status_reset", runStatusReset)
-	http.HandleFunc("/run/status_list", runStatusList)
-	http.HandleFunc("/run/now_node_get", runNowNodeGet)
-	http.HandleFunc("/run/step", runStep)
+	http.Handle("/run/status_reset", middleware(runStatusReset))
+	http.Handle("/run/status_list", middleware(runStatusList))
+	http.Handle("/run/now_node_get", middleware(runNowNodeGet))
+	http.Handle("/run/step", middleware(runStep))
+	http.Handle("/run/return", middleware(runReturn))
 }
 
 func res(data interface{}) map[string]interface{} {
@@ -58,10 +59,10 @@ func postJson(r *http.Request, obj interface{}) {
 	}
 }
 
-func resMiddle(w http.ResponseWriter, r *http.Request, oper interface{}) {
+func resInput(w http.ResponseWriter, r *http.Request, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	enc := json.NewEncoder(w)
-	res := res(oper)
+	res := res(data)
 	enc.Encode(res)
 }

@@ -41,10 +41,11 @@
     3. output：输出节点，传节点号
 
 ### 跑团相关api(pl/kp权限)
-1. 故事运行状态重置`/run/status_reset`
-2. 故事运行状态获取`/run/status_list`
-3. 故事运行当前故事节点获取`/run/now_node_get`
-4. 故事运行执行`/run/step?id`
+1. 故事运行状态重置`/run/status_reset` GET
+2. 故事运行状态获取`/run/status_list` GET
+3. 故事运行当前故事节点获取`/run/now_node_get` GET
+4. 故事运行执行`/run/step?id` GET
+5. 故事运行回退`/run/return?id` GET
 ```bash
 # 示例
 $ curl http://127.0.0.1:12345/store/list
