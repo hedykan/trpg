@@ -44,8 +44,18 @@ func RunStatusList() RunStatus {
 	return Status
 }
 
+// 跑团当前节点查询
 func RunNowNodeGet() StoryNode {
 	return StoryNodeGet(Status.NowStoryNode)
+}
+
+// 跑团已经过节点查询
+func RunNowRecordList() []StoryNode {
+	var res []StoryNode
+	for i := 0; i < (len(Status.RecordStoryNode) - 1); i++ {
+		res = append(res, *NodeMap[Status.RecordStoryNode[i]])
+	}
+	return res
 }
 
 // 步骤执行

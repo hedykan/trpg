@@ -65,6 +65,10 @@ func runNowNodeGet(w http.ResponseWriter, r *http.Request) {
 	resInput(w, r, con.RunNowNodeGet())
 }
 
+func runNowRecordList(w http.ResponseWriter, r *http.Request) {
+	resInput(w, r, con.RunNowRecordList())
+}
+
 func runStep(w http.ResponseWriter, r *http.Request) {
 	query := get(r)
 	id, err := strconv.Atoi(query["id"])
