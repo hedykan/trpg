@@ -52,6 +52,17 @@ func storyNodeLink(w http.ResponseWriter, r *http.Request) {
 	resInput(w, r, nil)
 }
 
+func storyNodeDelete(w http.ResponseWriter, r *http.Request) {
+	query := get(r)
+	id, err := strconv.Atoi(query["id"])
+	if err != nil {
+		panic(err)
+	} else {
+		con.StoryNodeDelete(id)
+	}
+	resInput(w, r, nil)
+}
+
 func runStatusReset(w http.ResponseWriter, r *http.Request) {
 	con.RunStatusCreate()
 	resInput(w, r, nil)

@@ -14,6 +14,7 @@ func RouteInit() {
 	http.Handle("/story/get", middleware(storyGet))
 	http.Handle("/story/node_add", middleware(storyNodeAdd))
 	http.Handle("/story/node_link", middleware(storyNodeLink))
+	http.Handle("/story/node_delete", middleware(storyNodeDelete))
 
 	http.Handle("/run/status_reset", middleware(runStatusReset))
 	http.Handle("/run/status_list", middleware(runStatusList))
@@ -61,9 +62,6 @@ func postJson(r *http.Request, obj interface{}) {
 }
 
 func resInput(w http.ResponseWriter, r *http.Request, data interface{}) {
-	w.Header().Set("Content-Type", "application/json")
-	// 解决跨域问题
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 	enc := json.NewEncoder(w)
 	res := res(data)

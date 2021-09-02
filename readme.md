@@ -39,6 +39,7 @@
     1. val：故事内容
     2. input：输入节点，传节点号
     3. output：输出节点，传节点号
+5. 故事节点删除`/store/node_delete?id` GET
 
 ### 跑团相关api(pl/kp权限)
 1. 故事运行状态重置`/run/status_reset` GET

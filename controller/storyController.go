@@ -86,8 +86,9 @@ func StoryNodeAdd(val string, input []int, output []int) int {
 		}
 	}
 	node.Id += 1
-
+	fmt.Println(node)
 	// 添加到目标输入节点和目标输出节点
+	// TODO 如果有不存在的节点会报错
 	for i := 0; i < len(input); i++ {
 		if searchId(NodeMap[input[i]].Output, node.Id) == -1 {
 			NodeMap[input[i]].Output = append(NodeMap[input[i]].Output, node.Id)
@@ -133,8 +134,31 @@ func StoryNodeEdit() {
 }
 
 // 故事节点删除
-func StoryNodeDelete() {
-
+func StoryNodeDelete(nodeId int) {
+	_, ok := NodeMap[nodeId]
+	if ok {
+		var index int
+		// 遍历当前节点的所有输入节点
+		for i := 0; i < len(NodeMap[nodeId].Input); i++ {
+			index = searchId(NodeMap[NodeMap[nodeId].Input[i]].Output, nodeId)
+			// 从输入节点中删除该节点
+			if index != -1 {
+				NodeMap[NodeMap[nodeId].Input[i]].Output = deleteIntSlice(NodeMap[NodeMap[nodeId].Input[i]].Output, index)
+			}
+		}
+		// 遍历当前节点的所有输出节点
+		for i := 0; i < len(NodeMap[nodeId].Output); i++ {
+			index = searchId(NodeMap[NodeMap[nodeId].Output[i]].Input, nodeId)
+			// 从输出节点中删除该节点
+			if index != -1 {
+				NodeMap[NodeMap[nodeId].Output[i]].Input = deleteIntSlice(NodeMap[NodeMap[nodeId].Output[i]].Input, index)
+			}
+		}
+		delete(NodeMap, nodeId)
+		index = searchNodeId(NodeArr, nodeId)
+		NodeArr = deleteNodeSlice(NodeArr, index)
+		storySave(NodeArr)
+	}
 }
 
 func storySave(nodeArr []StoryNode) {
@@ -146,11 +170,29 @@ func storySave(nodeArr []StoryNode) {
 }
 
 func searchId(idArr []int, id int) int {
-	var i int
-	for i = 0; i < len(idArr); i++ {
+	for i := 0; i < len(idArr); i++ {
 		if id == idArr[i] {
 			return i
 		}
 	}
 	return -1
+}
+
+func searchNodeId(nodeArr []StoryNode, id int) int {
+	for i := 0; i < len(nodeArr); i++ {
+		if id == nodeArr[i].Id {
+			return i
+		}
+	}
+	return -1
+}
+
+func deleteIntSlice(arr []int, index int) []int {
+	arr = append(arr[:index], arr[index+1:]...)
+	return arr
+}
+
+func deleteNodeSlice(arr []StoryNode, index int) []StoryNode {
+	arr = append(arr[:index], arr[index+1:]...)
+	return arr
 }
