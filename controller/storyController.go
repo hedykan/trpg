@@ -90,13 +90,21 @@ func StoryNodeAdd(val string, input []int, output []int) int {
 	// 添加到目标输入节点和目标输出节点
 	// TODO 如果有不存在的节点会报错
 	for i := 0; i < len(input); i++ {
-		if searchId(NodeMap[input[i]].Output, node.Id) == -1 {
-			NodeMap[input[i]].Output = append(NodeMap[input[i]].Output, node.Id)
+		if _, ok := NodeMap[input[i]]; ok {
+			if searchId(NodeMap[input[i]].Output, node.Id) == -1 {
+				NodeMap[input[i]].Output = append(NodeMap[input[i]].Output, node.Id)
+			}
+		} else {
+			return -1
 		}
 	}
 	for i := 0; i < len(output); i++ {
-		if searchId(NodeMap[output[i]].Input, node.Id) == -1 {
-			NodeMap[output[i]].Input = append(NodeMap[output[i]].Input, node.Id)
+		if _, ok := NodeMap[output[i]]; ok {
+			if searchId(NodeMap[output[i]].Input, node.Id) == -1 {
+				NodeMap[output[i]].Input = append(NodeMap[output[i]].Input, node.Id)
+			}
+		} else {
+			return -1
 		}
 	}
 
