@@ -55,9 +55,7 @@ func StoryInit() []StoryNode {
 	if err != nil {
 		fmt.Println("json decode fail", err)
 	}
-	for i := 0; i < len(NodeArr); i++ {
-		NodeMap[NodeArr[i].Id] = &NodeArr[i]
-	}
+	updateNodeMap()
 	return NodeArr
 }
 
@@ -73,26 +71,28 @@ func StoryNodeGet(id int) StoryNode {
 
 // 新增故事节点 TODO 给输入输出节点新增节点
 func StoryNodeAdd(val string, input []int, output []int) int {
-	var node StoryNode
-	node = StoryNode{
+	var Node StoryNode
+	Node = StoryNode{
 		Id:     0,
 		Input:  input,
 		Output: output,
 		Val:    val,
 	}
 	for _, value := range NodeArr {
-		if value.Id > node.Id {
-			node.Id = value.Id
+		if value.Id > Node.Id {
+			Node.Id = value.Id
 		}
 	}
-	node.Id += 1
-	fmt.Println(node)
+	Node.Id += 1
+	// append后NodeMap的地址和append的地址不同, 需要更新NodeMap
+	NodeArr = append(NodeArr, Node)
+	updateNodeMap()
 	// 添加到目标输入节点和目标输出节点
 	// TODO 如果有不存在的节点会报错
 	for i := 0; i < len(input); i++ {
 		if _, ok := NodeMap[input[i]]; ok {
-			if searchId(NodeMap[input[i]].Output, node.Id) == -1 {
-				NodeMap[input[i]].Output = append(NodeMap[input[i]].Output, node.Id)
+			if searchId(NodeMap[input[i]].Output, Node.Id) == -1 {
+				NodeMap[input[i]].Output = append(NodeMap[input[i]].Output, Node.Id)
 			}
 		} else {
 			return -1
@@ -100,20 +100,17 @@ func StoryNodeAdd(val string, input []int, output []int) int {
 	}
 	for i := 0; i < len(output); i++ {
 		if _, ok := NodeMap[output[i]]; ok {
-			if searchId(NodeMap[output[i]].Input, node.Id) == -1 {
-				NodeMap[output[i]].Input = append(NodeMap[output[i]].Input, node.Id)
+			if searchId(NodeMap[output[i]].Input, Node.Id) == -1 {
+				NodeMap[output[i]].Input = append(NodeMap[output[i]].Input, Node.Id)
 			}
 		} else {
 			return -1
 		}
 	}
-
 	// 存储新节点
-	NodeMap[node.Id] = &node
-	NodeArr = append(NodeArr, node)
 	storySave(NodeArr)
 
-	return node.Id
+	return Node.Id
 }
 
 // 插入链接故事节点
@@ -203,4 +200,10 @@ func deleteIntSlice(arr []int, index int) []int {
 func deleteNodeSlice(arr []StoryNode, index int) []StoryNode {
 	arr = append(arr[:index], arr[index+1:]...)
 	return arr
+}
+
+func updateNodeMap() {
+	for i := 0; i < len(NodeArr); i++ {
+		NodeMap[NodeArr[i].Id] = &NodeArr[i]
+	}
 }
