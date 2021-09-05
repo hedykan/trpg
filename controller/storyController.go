@@ -70,7 +70,7 @@ func StoryNodeGet(id int) StoryNode {
 }
 
 // 新增故事节点 TODO 给输入输出节点新增节点
-func StoryNodeAdd(val string, input []int, output []int) int {
+func StoryNodeAdd(val string, input []int, output []int) bool {
 	var Node StoryNode
 	Node = StoryNode{
 		Id:     0,
@@ -84,39 +84,27 @@ func StoryNodeAdd(val string, input []int, output []int) int {
 		}
 	}
 	Node.Id += 1
+
+	ok := storyInOutSet(Node)
+	if !ok {
+		return false
+	}
 	// append后NodeMap的地址和append的地址不同, 需要更新NodeMap
 	NodeArr = append(NodeArr, Node)
 	updateNodeMap()
-	// 添加到目标输入节点和目标输出节点
-	// TODO 如果有不存在的节点会报错
-	for i := 0; i < len(input); i++ {
-		if _, ok := NodeMap[input[i]]; ok {
-			if searchId(NodeMap[input[i]].Output, Node.Id) == -1 {
-				NodeMap[input[i]].Output = append(NodeMap[input[i]].Output, Node.Id)
-			}
-		} else {
-			return -1
-		}
-	}
-	for i := 0; i < len(output); i++ {
-		if _, ok := NodeMap[output[i]]; ok {
-			if searchId(NodeMap[output[i]].Input, Node.Id) == -1 {
-				NodeMap[output[i]].Input = append(NodeMap[output[i]].Input, Node.Id)
-			}
-		} else {
-			return -1
-		}
-	}
 	// 存储新节点
 	storySave(NodeArr)
 
-	return Node.Id
+	return true
 }
 
 // 插入链接故事节点
-func StoryNodeLink(val string, linkInput int, linkOutput int) {
+func StoryNodeLink(val string, linkInput int, linkOutput int) bool {
 	// 生成新节点
-	StoryNodeAdd(val, []int{linkInput}, []int{linkOutput})
+	ok := StoryNodeAdd(val, []int{linkInput}, []int{linkOutput})
+	if !ok {
+		return false
+	}
 	// 断开旧链接
 	for i := 0; i < len(NodeMap[linkInput].Output); i++ {
 		if linkOutput == NodeMap[linkInput].Output[i] {
@@ -131,11 +119,29 @@ func StoryNodeLink(val string, linkInput int, linkOutput int) {
 		}
 	}
 	storySave(NodeArr)
+	return true
 }
 
 // 故事节点修改
-func StoryNodeEdit() {
-
+func StoryNodeEdit(nodeId int, val string, input []int, output []int) bool {
+	if _, ok := NodeMap[nodeId]; !ok {
+		return false
+	}
+	var node StoryNode
+	node = StoryNode{
+		Id:     nodeId,
+		Input:  input,
+		Output: output,
+		Val:    val,
+	}
+	ok := storyInOutSet(node)
+	if !ok {
+		return false
+	}
+	NodeMap[nodeId].Val = val
+	NodeMap[nodeId].Input = input
+	NodeMap[nodeId].Output = output
+	return true
 }
 
 // 故事节点删除
@@ -164,6 +170,35 @@ func StoryNodeDelete(nodeId int) {
 		NodeArr = deleteNodeSlice(NodeArr, index)
 		storySave(NodeArr)
 	}
+}
+
+// 设置输入输出节点
+func storyInOutSet(node StoryNode) bool {
+	if !storyCheckInOut(node.Input, NodeMap) || !storyCheckInOut(node.Output, NodeMap) {
+		return false
+	}
+	for _, v := range node.Input {
+		if searchId(NodeMap[v].Output, node.Id) == -1 {
+			NodeMap[v].Output = append(NodeMap[v].Output, node.Id)
+		}
+	}
+	for _, v := range node.Output {
+		if searchId(NodeMap[v].Input, node.Id) == -1 {
+			NodeMap[v].Input = append(NodeMap[v].Input, node.Id)
+		}
+	}
+	return true
+}
+
+// 检查输入输出节点是否存在
+func storyCheckInOut(arr []int, arrMap map[int]*StoryNode) bool {
+	for _, v := range arr {
+		_, ok := arrMap[v]
+		if !ok {
+			return false
+		}
+	}
+	return true
 }
 
 func storySave(nodeArr []StoryNode) {

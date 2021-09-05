@@ -37,8 +37,8 @@ func storyNodeAdd(w http.ResponseWriter, r *http.Request) {
 		Output []int
 	}
 	postJson(r, &query)
-	con.StoryNodeAdd(query.Val, query.Input, query.Output)
-	resInput(w, r, nil)
+	ok := con.StoryNodeAdd(query.Val, query.Input, query.Output)
+	resInput(w, r, ok)
 }
 
 func storyNodeLink(w http.ResponseWriter, r *http.Request) {
@@ -48,8 +48,8 @@ func storyNodeLink(w http.ResponseWriter, r *http.Request) {
 		Output int
 	}
 	postJson(r, &query)
-	con.StoryNodeLink(query.Val, query.Input, query.Output)
-	resInput(w, r, nil)
+	ok := con.StoryNodeLink(query.Val, query.Input, query.Output)
+	resInput(w, r, ok)
 }
 
 func storyNodeDelete(w http.ResponseWriter, r *http.Request) {
