@@ -61,7 +61,7 @@ func RunNowRecordList() []StoryNode {
 // 步骤执行
 func RunStep(nodeId int) {
 	// 确定有当地故事节点可以进入目标节点
-	ok := searchId(NodeMap[Status.NowStoryNode].Output, nodeId)
+	ok := searchSelecterId(NodeMap[Status.NowStoryNode].Output, nodeId)
 	if ok == -1 {
 		return
 	}

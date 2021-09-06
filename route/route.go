@@ -10,6 +10,7 @@ type HandlerFunc func(http.ResponseWriter, *http.Request)
 
 func RouteInit() {
 	http.Handle("/", middleware(index))
+	http.Handle("/story/init", middleware(storyInit))
 	http.Handle("/story/list", middleware(storyList))
 	http.Handle("/story/get", middleware(storyGet))
 	http.Handle("/story/node_add", middleware(storyNodeAdd))

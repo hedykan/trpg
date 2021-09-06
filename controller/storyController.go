@@ -10,11 +10,17 @@ import (
 	底层思想是操作一个故事表，根据输入输出节点决定故事走向
 */
 
+// 输入输出结构体
+type StorySeleter struct {
+	Id  int
+	Val string
+}
+
 type StoryNode struct {
 	Id     int
 	Val    string
-	Input  []int
-	Output []int
+	Input  []StorySeleter // []int
+	Output []StorySeleter // []int
 }
 
 type StoryNodeMap map[int]*StoryNode
@@ -27,14 +33,14 @@ func StoryCreate() {
 	storyArr := make([]StoryNode, 2)
 	storyArr[0] = StoryNode{
 		Id:     0,
-		Input:  []int{},
-		Output: []int{1},
+		Input:  []StorySeleter{},
+		Output: []StorySeleter{{Id: 1, Val: "end"}},
 		Val:    "start",
 	}
 	storyArr[1] = StoryNode{
 		Id:     1,
-		Input:  []int{0},
-		Output: []int{},
+		Input:  []StorySeleter{{Id: 0, Val: "start"}},
+		Output: []StorySeleter{},
 		Val:    "end",
 	}
 	NodeArr = storyArr
@@ -70,7 +76,7 @@ func StoryNodeGet(id int) StoryNode {
 }
 
 // 新增故事节点 TODO 给输入输出节点新增节点
-func StoryNodeAdd(val string, input []int, output []int) bool {
+func StoryNodeAdd(val string, input []StorySeleter, output []StorySeleter) bool {
 	var Node StoryNode
 	Node = StoryNode{
 		Id:     0,
@@ -99,23 +105,23 @@ func StoryNodeAdd(val string, input []int, output []int) bool {
 }
 
 // 插入链接故事节点
-func StoryNodeLink(val string, linkInput int, linkOutput int) bool {
+func StoryNodeLink(val string, linkInput StorySeleter, linkOutput StorySeleter) bool {
 	// 生成新节点
-	ok := StoryNodeAdd(val, []int{linkInput}, []int{linkOutput})
+	ok := StoryNodeAdd(val, []StorySeleter{linkInput}, []StorySeleter{linkOutput})
 	if !ok {
 		return false
 	}
 	// 断开旧链接
-	for i := 0; i < len(NodeMap[linkInput].Output); i++ {
-		if linkOutput == NodeMap[linkInput].Output[i] {
+	for i := 0; i < len(NodeMap[linkInput.Id].Output); i++ {
+		if linkOutput == NodeMap[linkInput.Id].Output[i] {
 			// 删除连接输入节点的原输出节点
-			NodeMap[linkInput].Output = append(NodeMap[linkInput].Output[:i], NodeMap[linkInput].Output[i+1:]...)
+			NodeMap[linkInput.Id].Output = append(NodeMap[linkInput.Id].Output[:i], NodeMap[linkInput.Id].Output[i+1:]...)
 		}
 	}
-	for i := 0; i < len(NodeMap[linkOutput].Input); i++ {
-		if linkInput == NodeMap[linkOutput].Input[i] {
+	for i := 0; i < len(NodeMap[linkOutput.Id].Input); i++ {
+		if linkInput == NodeMap[linkOutput.Id].Input[i] {
 			// 删除连接输出节点的原输入节点
-			NodeMap[linkOutput].Input = append(NodeMap[linkOutput].Input[:i], NodeMap[linkOutput].Input[i+1:]...)
+			NodeMap[linkOutput.Id].Input = append(NodeMap[linkOutput.Id].Input[:i], NodeMap[linkOutput.Id].Input[i+1:]...)
 		}
 	}
 	storySave(NodeArr)
@@ -123,7 +129,7 @@ func StoryNodeLink(val string, linkInput int, linkOutput int) bool {
 }
 
 // 故事节点修改
-func StoryNodeEdit(nodeId int, val string, input []int, output []int) bool {
+func StoryNodeEdit(nodeId int, val string, input []StorySeleter, output []StorySeleter) bool {
 	if _, ok := NodeMap[nodeId]; !ok {
 		return false
 	}
@@ -151,18 +157,18 @@ func StoryNodeDelete(nodeId int) {
 		var index int
 		// 遍历当前节点的所有输入节点
 		for i := 0; i < len(NodeMap[nodeId].Input); i++ {
-			index = searchId(NodeMap[NodeMap[nodeId].Input[i]].Output, nodeId)
+			index = searchSelecterId(NodeMap[NodeMap[nodeId].Input[i].Id].Output, nodeId)
 			// 从输入节点中删除该节点
 			if index != -1 {
-				NodeMap[NodeMap[nodeId].Input[i]].Output = deleteIntSlice(NodeMap[NodeMap[nodeId].Input[i]].Output, index)
+				NodeMap[NodeMap[nodeId].Input[i].Id].Output = deleteSelecter(NodeMap[NodeMap[nodeId].Input[i].Id].Output, index)
 			}
 		}
 		// 遍历当前节点的所有输出节点
 		for i := 0; i < len(NodeMap[nodeId].Output); i++ {
-			index = searchId(NodeMap[NodeMap[nodeId].Output[i]].Input, nodeId)
+			index = searchSelecterId(NodeMap[NodeMap[nodeId].Output[i].Id].Input, nodeId)
 			// 从输出节点中删除该节点
 			if index != -1 {
-				NodeMap[NodeMap[nodeId].Output[i]].Input = deleteIntSlice(NodeMap[NodeMap[nodeId].Output[i]].Input, index)
+				NodeMap[NodeMap[nodeId].Output[i].Id].Input = deleteSelecter(NodeMap[NodeMap[nodeId].Output[i].Id].Input, index)
 			}
 		}
 		delete(NodeMap, nodeId)
@@ -174,26 +180,26 @@ func StoryNodeDelete(nodeId int) {
 
 // 设置输入输出节点
 func storyInOutSet(node StoryNode) bool {
-	if !storyCheckInOut(node.Input, NodeMap) || !storyCheckInOut(node.Output, NodeMap) {
+	if !storyCheckSelecter(node.Input, NodeMap) || !storyCheckSelecter(node.Output, NodeMap) {
 		return false
 	}
 	for _, v := range node.Input {
-		if searchId(NodeMap[v].Output, node.Id) == -1 {
-			NodeMap[v].Output = append(NodeMap[v].Output, node.Id)
+		if searchSelecterId(NodeMap[v.Id].Output, node.Id) == -1 {
+			NodeMap[v.Id].Output = append(NodeMap[v.Id].Output, StorySeleter{Id: node.Id})
 		}
 	}
 	for _, v := range node.Output {
-		if searchId(NodeMap[v].Input, node.Id) == -1 {
-			NodeMap[v].Input = append(NodeMap[v].Input, node.Id)
+		if searchSelecterId(NodeMap[v.Id].Input, node.Id) == -1 {
+			NodeMap[v.Id].Input = append(NodeMap[v.Id].Input, StorySeleter{Id: node.Id})
 		}
 	}
 	return true
 }
 
 // 检查输入输出节点是否存在
-func storyCheckInOut(arr []int, arrMap map[int]*StoryNode) bool {
+func storyCheckSelecter(arr []StorySeleter, arrMap map[int]*StoryNode) bool {
 	for _, v := range arr {
-		_, ok := arrMap[v]
+		_, ok := arrMap[v.Id]
 		if !ok {
 			return false
 		}
@@ -207,6 +213,15 @@ func storySave(nodeArr []StoryNode) {
 		panic(err)
 	}
 	ioutil.WriteFile("file/story_example.json", str, 0644)
+}
+
+func searchSelecterId(idArr []StorySeleter, id int) int {
+	for i := 0; i < len(idArr); i++ {
+		if id == idArr[i].Id {
+			return i
+		}
+	}
+	return -1
 }
 
 func searchId(idArr []int, id int) int {
@@ -227,7 +242,7 @@ func searchNodeId(nodeArr []StoryNode, id int) int {
 	return -1
 }
 
-func deleteIntSlice(arr []int, index int) []int {
+func deleteSelecter(arr []StorySeleter, index int) []StorySeleter {
 	arr = append(arr[:index], arr[index+1:]...)
 	return arr
 }
