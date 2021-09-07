@@ -50,7 +50,7 @@ func openHtml() {
 func open(uri string) error {
 	run, ok := commands[runtime.GOOS]
 	if !ok {
-		return fmt.Errorf("don't know how to open things on %s platform", runtime.GOOS)
+		return fmt.Errorf("don't know how to open things on %s platform\n", runtime.GOOS)
 	}
 
 	cmd := exec.Command(`cmd`, `/c`, run, uri)
