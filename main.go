@@ -24,7 +24,7 @@ func main() {
 }
 
 func mainInit() {
-	con.StoryInit()
+	con.StoryLoad()
 	con.RunInit()
 	route.RouteInit()
 	route.LogInit()
@@ -43,7 +43,7 @@ func openHtml() {
 	if err == nil {
 		open(htmlPath)
 	} else {
-		fmt.Printf("%s is not exist", htmlPath)
+		fmt.Printf("%s is not exist\n", htmlPath)
 	}
 }
 

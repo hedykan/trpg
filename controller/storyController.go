@@ -50,8 +50,8 @@ func StoryCreate() {
 	storySave(storyArr)
 }
 
-// 故事整体初始化
-func StoryInit() []StoryNode {
+// 故事整体加载
+func StoryLoad() []StoryNode {
 	NodeMap = make(map[int]*StoryNode)
 	f, err := ioutil.ReadFile("file/story_example.json")
 	if err != nil {

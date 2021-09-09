@@ -2,6 +2,7 @@ package route
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -11,10 +12,12 @@ type HandlerFunc func(http.ResponseWriter, *http.Request)
 func RouteInit() {
 	http.Handle("/", middleware(index))
 	http.Handle("/story/init", middleware(storyInit))
+	http.Handle("/story/load", middleware(storyLoad))
 	http.Handle("/story/list", middleware(storyList))
 	http.Handle("/story/get", middleware(storyGet))
 	http.Handle("/story/node_add", middleware(storyNodeAdd))
 	http.Handle("/story/node_link", middleware(storyNodeLink))
+	http.Handle("/story/node_edit", middleware(storyNodeEdit))
 	http.Handle("/story/node_delete", middleware(storyNodeDelete))
 
 	http.Handle("/run/status_reset", middleware(runStatusReset))
@@ -53,6 +56,7 @@ func postForm(r *http.Request, query []string) map[string]interface{} {
 
 func postJson(r *http.Request, obj interface{}) {
 	body, err := ioutil.ReadAll(r.Body)
+	fmt.Println(string(body))
 	if err != nil {
 		panic(err)
 	}

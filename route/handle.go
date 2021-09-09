@@ -19,7 +19,11 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 func storyInit(w http.ResponseWriter, r *http.Request) {
 	con.StoryCreate()
-	resInput(w, r, con.StoryInit())
+	resInput(w, r, con.StoryLoad())
+}
+
+func storyLoad(w http.ResponseWriter, r *http.Request) {
+	resInput(w, r, con.StoryLoad())
 }
 
 func storyList(w http.ResponseWriter, r *http.Request) {
@@ -54,6 +58,18 @@ func storyNodeLink(w http.ResponseWriter, r *http.Request) {
 	}
 	postJson(r, &query)
 	ok := con.StoryNodeLink(query.Val, query.Input, query.Output)
+	resInput(w, r, ok)
+}
+
+func storyNodeEdit(w http.ResponseWriter, r *http.Request) {
+	var query struct {
+		Id     int
+		Val    string
+		Input  []con.StorySeleter
+		Output []con.StorySeleter
+	}
+	postJson(r, &query)
+	ok := con.StoryNodeEdit(query.Id, query.Val, query.Input, query.Output)
 	resInput(w, r, ok)
 }
 
