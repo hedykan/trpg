@@ -28,6 +28,7 @@ func mainInit() {
 	con.RunInit()
 	route.RouteInit()
 	route.LogInit()
+	con.AttrInit()
 }
 
 var commands = map[string]string{
