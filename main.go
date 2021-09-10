@@ -24,11 +24,13 @@ func main() {
 }
 
 func mainInit() {
+	// 跑团服务初始化
 	con.StoryLoad()
 	con.RunInit()
+	con.AttrInit()
+	// 路由服务初始化
 	route.RouteInit()
 	route.LogInit()
-	con.AttrInit()
 }
 
 var commands = map[string]string{
