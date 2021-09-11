@@ -172,7 +172,7 @@ func StoryNodeDelete(nodeId int) {
 			}
 		}
 		delete(StoryNodeMap, nodeId)
-		index = searchNodeId(StoryNodeArr, nodeId)
+		index = searchStoryId(StoryNodeArr, nodeId)
 		StoryNodeArr = deleteNodeSlice(StoryNodeArr, index)
 		storySave(StoryNodeArr)
 	}
@@ -233,7 +233,7 @@ func searchId(idArr []int, id int) int {
 	return -1
 }
 
-func searchNodeId(arr []StoryNode, id int) int {
+func searchStoryId(arr []StoryNode, id int) int {
 	for i := 0; i < len(arr); i++ {
 		if id == arr[i].Id {
 			return i

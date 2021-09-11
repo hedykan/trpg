@@ -88,6 +88,7 @@ func AttrNodeDelete(id int) bool {
 		return false
 	}
 	// TODO 删除操作
+
 	return false
 }
 
@@ -97,6 +98,15 @@ func attrArrSave(attrArr []AttrNode) {
 		panic(err)
 	}
 	ioutil.WriteFile("file/attr_example.json", str, 0644)
+}
+
+func searchAttrId(arr []AttrNode, id int) int {
+	for i := 0; i < len(arr); i++ {
+		if arr[i].Id == id {
+			return i
+		}
+	}
+	return -1
 }
 
 func updateAttrNodeMap() {
