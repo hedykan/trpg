@@ -25,7 +25,7 @@ func main() {
 
 func mainInit() {
 	// 跑团服务初始化
-	con.StoryLoad()
+	con.StoryInit()
 	con.RunInit()
 	con.AttrInit()
 	// 路由服务初始化

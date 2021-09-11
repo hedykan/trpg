@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 )
 
 /*
@@ -25,6 +26,13 @@ func RunStatusCreate() {
 	}
 	Status = status_new
 	runStatusSave(status_new)
+}
+
+func FileCheck(path string, function func()) {
+	_, err := os.Stat(path)
+	if err != nil {
+		function()
+	}
 }
 
 // 跑团状态初始化

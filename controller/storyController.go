@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"io/ioutil"
+	"os"
 )
 
 /*
@@ -41,8 +42,16 @@ func StoryCreate() {
 		Val:    "end",
 	}
 	StoryNodeArr = storyArr
-	updateNodeMap()
 	storySave(storyArr)
+}
+
+func StoryFileCheck() {
+	path, _ := os.Getwd()
+	path = path + "\\file\\story_example.json"
+	_, err := os.Stat(path)
+	if err != nil {
+		StoryCreate()
+	}
 }
 
 // 故事整体加载
@@ -56,8 +65,13 @@ func StoryLoad() []StoryNode {
 	if err != nil {
 		panic(err)
 	}
-	updateNodeMap()
 	return StoryNodeArr
+}
+
+func StoryInit() {
+	StoryFileCheck()
+	StoryLoad()
+	updateNodeMap()
 }
 
 // 故事整体展示

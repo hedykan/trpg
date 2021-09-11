@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"io/ioutil"
+	"os"
 )
 
 /*
@@ -34,6 +35,15 @@ func AttrCreate() {
 	attrArrSave(AttrNodeArr)
 }
 
+func AttrFileCheck() {
+	path, _ := os.Getwd()
+	path = path + "\\file\\attr_example.json"
+	_, err := os.Stat(path)
+	if err != nil {
+		AttrCreate()
+	}
+}
+
 func AttrLoad() []AttrNode {
 	AttrNodeMap = make(map[int]*AttrNode)
 	f, err := ioutil.ReadFile("file/attr_example.json")
@@ -51,6 +61,7 @@ func AttrLoad() []AttrNode {
 
 // 属性列表初始化
 func AttrInit() {
+	AttrFileCheck()
 	AttrLoad()
 	updateAttrNodeMap()
 }
@@ -88,8 +99,14 @@ func AttrNodeDelete(id int) bool {
 		return false
 	}
 	// TODO 删除操作
+	delete(AttrNodeMap, id)
+	index := searchAttrId(AttrNodeArr, id)
+	if index == -1 {
+		return false
+	}
+	deleteAttrSlice(AttrNodeArr, index)
 
-	return false
+	return true
 }
 
 func attrArrSave(attrArr []AttrNode) {
@@ -98,6 +115,11 @@ func attrArrSave(attrArr []AttrNode) {
 		panic(err)
 	}
 	ioutil.WriteFile("file/attr_example.json", str, 0644)
+}
+
+func deleteAttrSlice(arr []AttrNode, index int) []AttrNode {
+	arr = append(arr[:index], arr[index+1:]...)
+	return arr
 }
 
 func searchAttrId(arr []AttrNode, id int) int {
