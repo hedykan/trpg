@@ -8,12 +8,6 @@ import (
 )
 
 func index(w http.ResponseWriter, r *http.Request) {
-	// con.StoryCreate()
-	// con.RunStatusCreate()
-	// con.StoryNodeAdd("选项1", []int{0}, []int{1})
-	// con.StoryNodeAdd("选项2", []int{0}, []int{1})
-	// con.StoryNodeLink("后续选项1", 2, 1)
-	// con.StoryNodeLink("后续选项2", 3, 1)
 	resInput(w, r, nil)
 }
 
@@ -40,11 +34,7 @@ func storyGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func storyNodeAdd(w http.ResponseWriter, r *http.Request) {
-	var query struct {
-		Val    string
-		Input  []con.StorySeleter
-		Output []con.StorySeleter
-	}
+	var query con.StoryNode
 	postJson(r, &query)
 	ok := con.StoryNodeAdd(query.Val, query.Input, query.Output)
 	resInput(w, r, ok)
@@ -62,12 +52,7 @@ func storyNodeLink(w http.ResponseWriter, r *http.Request) {
 }
 
 func storyNodeEdit(w http.ResponseWriter, r *http.Request) {
-	var query struct {
-		Id     int
-		Val    string
-		Input  []con.StorySeleter
-		Output []con.StorySeleter
-	}
+	var query con.StoryNode
 	postJson(r, &query)
 	ok := con.StoryNodeEdit(query.Id, query.Val, query.Input, query.Output)
 	resInput(w, r, ok)
@@ -133,4 +118,26 @@ func attrNodeGet(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	resInput(w, r, con.AttrNodeGet(id))
+}
+
+func attrNodeAdd(w http.ResponseWriter, r *http.Request) {
+	var query con.AttrNode
+	postJson(r, &query)
+	con.AttrNodeAdd(query.Val, query.Num)
+	resInput(w, r, nil)
+}
+
+func attrNodeEdit(w http.ResponseWriter, r *http.Request) {
+	var query con.AttrNode
+	postJson(r, &query)
+	resInput(w, r, con.AttrNodeEdit(query.Id, query.Val, query.Num))
+}
+
+func attrNodeDelete(w http.ResponseWriter, r *http.Request) {
+	query := get(r)
+	id, err := strconv.Atoi(query["id"])
+	if err != nil {
+		panic(err)
+	}
+	resInput(w, r, con.AttrNodeDelete(id))
 }

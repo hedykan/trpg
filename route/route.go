@@ -2,7 +2,6 @@ package route
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -29,6 +28,9 @@ func RouteInit() {
 
 	http.Handle("/attr/list", middleware(attrList))
 	http.Handle("/attr/node_get", middleware(attrNodeGet))
+	http.Handle("/attr/node_add", middleware(attrNodeAdd))
+	http.Handle("/attr/node_edit", middleware(attrNodeEdit))
+	http.Handle("/attr/node_delete", middleware(attrNodeDelete))
 }
 
 func res(data interface{}) map[string]interface{} {
@@ -59,7 +61,6 @@ func postForm(r *http.Request, query []string) map[string]interface{} {
 
 func postJson(r *http.Request, obj interface{}) {
 	body, err := ioutil.ReadAll(r.Body)
-	fmt.Println(string(body))
 	if err != nil {
 		panic(err)
 	}
