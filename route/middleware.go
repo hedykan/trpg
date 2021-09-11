@@ -46,6 +46,10 @@ func middleware(next func(http.ResponseWriter, *http.Request)) http.Handler {
 
 func LogInit() {
 	file := "./logs/http.log"
+	_, err := os.Stat("./logs")
+	if err != nil {
+		os.MkdirAll("./logs", 0755)
+	}
 	logFile, err := os.OpenFile(file, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0766)
 	if err != nil {
 		panic(err)

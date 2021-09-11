@@ -35,18 +35,9 @@ func AttrCreate() {
 	attrArrSave(AttrNodeArr)
 }
 
-func AttrFileCheck() {
-	path, _ := os.Getwd()
-	path = path + "\\file\\attr_example.json"
-	_, err := os.Stat(path)
-	if err != nil {
-		AttrCreate()
-	}
-}
-
 func AttrLoad() []AttrNode {
 	AttrNodeMap = make(map[int]*AttrNode)
-	f, err := ioutil.ReadFile("file/attr_example.json")
+	f, err := ioutil.ReadFile("./file/attr_example.json")
 	if err != nil {
 		panic(err)
 	}
@@ -61,7 +52,9 @@ func AttrLoad() []AttrNode {
 
 // 属性列表初始化
 func AttrInit() {
-	AttrFileCheck()
+	path, _ := os.Getwd()
+	path = path + "/file/attr_example.json"
+	FileCheck(path, AttrCreate)
 	AttrLoad()
 	updateAttrNodeMap()
 }

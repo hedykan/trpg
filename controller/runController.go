@@ -28,16 +28,9 @@ func RunStatusCreate() {
 	runStatusSave(status_new)
 }
 
-func FileCheck(path string, function func()) {
-	_, err := os.Stat(path)
-	if err != nil {
-		function()
-	}
-}
-
-// 跑团状态初始化
-func RunInit() {
-	f, err := ioutil.ReadFile("file/status_example.json")
+// 跑团加载
+func RunLoad() {
+	f, err := ioutil.ReadFile("./file/status_example.json")
 	if err != nil {
 		fmt.Println("read fail", err)
 	}
@@ -45,6 +38,14 @@ func RunInit() {
 	if err != nil {
 		fmt.Println("json decode fail", err)
 	}
+}
+
+// 跑团状态初始化
+func RunInit() {
+	path, _ := os.Getwd()
+	path = path + "/file/status_example.json"
+	FileCheck(path, RunStatusCreate)
+	RunLoad()
 }
 
 // 跑团状态展示

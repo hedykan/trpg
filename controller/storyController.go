@@ -45,19 +45,10 @@ func StoryCreate() {
 	storySave(storyArr)
 }
 
-func StoryFileCheck() {
-	path, _ := os.Getwd()
-	path = path + "\\file\\story_example.json"
-	_, err := os.Stat(path)
-	if err != nil {
-		StoryCreate()
-	}
-}
-
 // 故事整体加载
 func StoryLoad() []StoryNode {
 	StoryNodeMap = make(map[int]*StoryNode)
-	f, err := ioutil.ReadFile("file/story_example.json")
+	f, err := ioutil.ReadFile("./file/story_example.json")
 	if err != nil {
 		panic(err)
 	}
@@ -69,7 +60,9 @@ func StoryLoad() []StoryNode {
 }
 
 func StoryInit() {
-	StoryFileCheck()
+	path, _ := os.Getwd()
+	path = path + "/file/story_example.json"
+	FileCheck(path, StoryCreate)
 	StoryLoad()
 	updateNodeMap()
 }
