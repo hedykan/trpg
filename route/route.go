@@ -26,6 +26,9 @@ func RouteInit() {
 	http.Handle("/run/now_record_list", middleware(runNowRecordList))
 	http.Handle("/run/step", middleware(runStep))
 	http.Handle("/run/return", middleware(runReturn))
+
+	http.Handle("/attr/list", middleware(attrList))
+	http.Handle("/attr/node_get", middleware(attrNodeGet))
 }
 
 func res(data interface{}) map[string]interface{} {

@@ -121,3 +121,16 @@ func runReturn(w http.ResponseWriter, r *http.Request) {
 	con.RunReturn(id)
 	resInput(w, r, nil)
 }
+
+func attrList(w http.ResponseWriter, r *http.Request) {
+	resInput(w, r, con.AttrList())
+}
+
+func attrNodeGet(w http.ResponseWriter, r *http.Request) {
+	query := get(r)
+	id, err := strconv.Atoi(query["id"])
+	if err != nil {
+		panic(err)
+	}
+	resInput(w, r, con.AttrNodeGet(id))
+}

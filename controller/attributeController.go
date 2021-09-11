@@ -65,6 +65,32 @@ func AttrNodeGet(id int) AttrNode {
 	return *AttrNodeMap[id]
 }
 
+// 新增属性节点
+func AttrNodeAdd(val string, num int) int {
+	node := AttrNodeCreate(val, num)
+	AttrNodeArr = append(AttrNodeArr, node)
+	updateAttrNodeMap()
+	return node.Id
+}
+
+// 编辑属性节点
+func AttrNodeEdit(id int, val string, num int) bool {
+	if _, ok := AttrNodeMap[id]; ok != true {
+		return false
+	}
+	AttrNodeMap[id].Val = val
+	AttrNodeMap[id].Num = num
+	return true
+}
+
+func AttrNodeDelete(id int) bool {
+	if _, ok := AttrNodeMap[id]; ok != true {
+		return false
+	}
+	// TODO 删除操作
+	return false
+}
+
 func attrArrSave(attrArr []AttrNode) {
 	str, err := json.Marshal(attrArr)
 	if err != nil {
