@@ -27,6 +27,11 @@ type StoryNode struct {
 var StoryNodeMap map[int]*StoryNode
 var StoryNodeArr []StoryNode
 
+func Test() {
+	StorySelecterAdd(0, 1, "test")
+	StorySelecterDelete(0, 1)
+}
+
 func StoryCreate() {
 	storyArr := make([]StoryNode, 2)
 	storyArr[0] = StoryNode{
@@ -77,11 +82,11 @@ func StoryNodeGet(id int) StoryNode {
 	return *StoryNodeMap[id]
 }
 
-func StoryNodeCreate(val string, input []StorySeleter, output []StorySeleter) StoryNode {
+func StoryNodeCreate(val string) StoryNode {
 	var node = StoryNode{
 		Id:     0,
-		Input:  input,
-		Output: output,
+		Input:  nil,
+		Output: nil,
 		Val:    val,
 	}
 	for _, value := range StoryNodeArr {
@@ -96,15 +101,18 @@ func StoryNodeCreate(val string, input []StorySeleter, output []StorySeleter) St
 
 // 新增故事节点 TODO 给输入输出节点新增节点
 func StoryNodeAdd(val string, input []StorySeleter, output []StorySeleter) bool {
-	node := StoryNodeCreate(val, input, output)
-
-	ok := storyInOutSet(node)
-	if !ok {
-		return false
-	}
+	node := StoryNodeCreate(val)
 	// append后StoryNodeMap的地址和append的地址不同, 需要更新StoryNodeMap
 	StoryNodeArr = append(StoryNodeArr, node)
 	updateNodeMap()
+	// 自己的输出组
+	for i := 0; i < len(output); i++ {
+		StorySelecterAdd(node.Id, output[i].Id, output[i].Val)
+	}
+	// 对方的输出组
+	for i := 0; i < len(input); i++ {
+		StorySelecterAdd(input[i].Id, node.Id, input[i].Val)
+	}
 	// 存储新节点
 	storySave(StoryNodeArr)
 
@@ -137,46 +145,43 @@ func StoryNodeLink(val string, linkInput StorySeleter, linkOutput StorySeleter) 
 
 // 故事节点修改
 func StoryNodeEdit(nodeId int, val string, input []StorySeleter, output []StorySeleter) bool {
-	if _, ok := StoryNodeMap[nodeId]; !ok {
+	if data, ok := StoryNodeMap[nodeId]; !ok {
 		return false
+	} else {
+		// 先清掉链接
+		// 清除自己的输出组
+		for i := 0; i < len(data.Output); i++ {
+			StorySelecterDelete(nodeId, data.Output[i].Id)
+		}
+		// 清除别人的输出组
+		for i := 0; i < len(data.Input); i++ {
+			StorySelecterDelete(data.Input[i].Id, nodeId)
+		}
 	}
-	var node StoryNode
-	node = StoryNode{
-		Id:     nodeId,
-		Input:  input,
-		Output: output,
-		Val:    val,
+	// 设置自己的输出组
+	for i := 0; i < len(output); i++ {
+		StorySelecterAdd(nodeId, output[i].Id, output[i].Val)
 	}
-	ok := storyInOutSet(node)
-	if !ok {
-		return false
+	// 对方的输出组
+	for i := 0; i < len(input); i++ {
+		StorySelecterAdd(input[i].Id, nodeId, input[i].Val)
 	}
 	StoryNodeMap[nodeId].Val = val
-	StoryNodeMap[nodeId].Input = input
-	StoryNodeMap[nodeId].Output = output
 	return true
 }
 
 // 故事节点删除
 func StoryNodeDelete(nodeId int) {
-	_, ok := StoryNodeMap[nodeId]
+	data, ok := StoryNodeMap[nodeId]
 	if ok {
 		var index int
-		// 遍历当前节点的所有输入节点
-		for i := 0; i < len(StoryNodeMap[nodeId].Input); i++ {
-			index = searchSelecterId(StoryNodeMap[StoryNodeMap[nodeId].Input[i].Id].Output, nodeId)
-			// 从输入节点中删除该节点
-			if index != -1 {
-				StoryNodeMap[StoryNodeMap[nodeId].Input[i].Id].Output = deleteSelecter(StoryNodeMap[StoryNodeMap[nodeId].Input[i].Id].Output, index)
-			}
+		// 清除自己的输出组
+		for i := 0; i < len(data.Output); i++ {
+			StorySelecterDelete(nodeId, data.Output[i].Id)
 		}
-		// 遍历当前节点的所有输出节点
-		for i := 0; i < len(StoryNodeMap[nodeId].Output); i++ {
-			index = searchSelecterId(StoryNodeMap[StoryNodeMap[nodeId].Output[i].Id].Input, nodeId)
-			// 从输出节点中删除该节点
-			if index != -1 {
-				StoryNodeMap[StoryNodeMap[nodeId].Output[i].Id].Input = deleteSelecter(StoryNodeMap[StoryNodeMap[nodeId].Output[i].Id].Input, index)
-			}
+		// 清除别人的输出组
+		for i := 0; i < len(data.Input); i++ {
+			StorySelecterDelete(data.Input[i].Id, nodeId)
 		}
 		delete(StoryNodeMap, nodeId)
 		index = searchStoryId(StoryNodeArr, nodeId)
@@ -185,21 +190,49 @@ func StoryNodeDelete(nodeId int) {
 	}
 }
 
-// 设置输入输出节点
-func storyInOutSet(node StoryNode) bool {
-	if !storyCheckSelecter(node.Input, StoryNodeMap) || !storyCheckSelecter(node.Output, StoryNodeMap) {
-		return false
-	}
-	for _, v := range node.Input {
-		if searchSelecterId(StoryNodeMap[v.Id].Output, node.Id) == -1 {
-			StoryNodeMap[v.Id].Output = append(StoryNodeMap[v.Id].Output, StorySeleter{Id: node.Id})
+// 故事节点链接添加
+func StorySelecterAdd(nodeId int, linkId int, val string) bool {
+	// 新增输出节点
+	if node, ok := StoryNodeMap[nodeId]; ok {
+		index := searchSelecterId(node.Output, linkId)
+		if index == -1 {
+			node.Output = append(node.Output, StorySeleter{Id: linkId, Val: val})
+		} else {
+			node.Output[index].Val = val
 		}
 	}
-	for _, v := range node.Output {
-		if searchSelecterId(StoryNodeMap[v.Id].Input, node.Id) == -1 {
-			StoryNodeMap[v.Id].Input = append(StoryNodeMap[v.Id].Input, StorySeleter{Id: node.Id})
+	// 被输入的节点新增输入节点
+	if node, ok := StoryNodeMap[linkId]; ok {
+		index := searchSelecterId(node.Input, nodeId)
+		if index == -1 {
+			node.Input = append(node.Input, StorySeleter{Id: nodeId, Val: val})
+		} else {
+			node.Input[index].Val = val
 		}
 	}
+	storySave(StoryNodeArr)
+	return true
+}
+
+// 故事节点链接删除
+// 查找自己的输出组删除对方输入组
+// 查找自己的输入组让对方删除自己
+func StorySelecterDelete(nodeId int, linkId int) bool {
+	// 删除输出组链接
+	if node, ok := StoryNodeMap[nodeId]; ok {
+		index := searchSelecterId(node.Output, linkId)
+		if index != -1 {
+			node.Output = deleteSelecter(node.Output, index)
+		}
+	}
+	// 删除输入组链接
+	if node, ok := StoryNodeMap[linkId]; ok {
+		index := searchSelecterId(node.Input, nodeId)
+		if index != -1 {
+			node.Input = deleteSelecter(node.Input, index)
+		}
+	}
+	storySave(StoryNodeArr)
 	return true
 }
 

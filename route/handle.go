@@ -8,6 +8,7 @@ import (
 )
 
 func index(w http.ResponseWriter, r *http.Request) {
+	con.Test()
 	resInput(w, r, nil)
 }
 
@@ -67,6 +68,25 @@ func storyNodeDelete(w http.ResponseWriter, r *http.Request) {
 		con.StoryNodeDelete(id)
 	}
 	resInput(w, r, nil)
+}
+
+func storySelecterAdd(w http.ResponseWriter, r *http.Request) {
+	var query struct {
+		NodeId int
+		LinkId int
+		Val    string
+	}
+	postJson(r, &query)
+	resInput(w, r, con.StorySelecterAdd(query.NodeId, query.LinkId, query.Val))
+}
+
+func storySelecterDelete(w http.ResponseWriter, r *http.Request) {
+	var query struct {
+		NodeId int
+		LinkId int
+	}
+	postJson(r, &query)
+	resInput(w, r, con.StorySelecterDelete(query.NodeId, query.LinkId))
 }
 
 func runStatusReset(w http.ResponseWriter, r *http.Request) {

@@ -18,6 +18,8 @@ func RouteInit() {
 	http.Handle("/story/node_link", middleware(storyNodeLink))
 	http.Handle("/story/node_edit", middleware(storyNodeEdit))
 	http.Handle("/story/node_delete", middleware(storyNodeDelete))
+	http.Handle("/story/selecter_add", middleware(storySelecterAdd))
+	http.Handle("/story/selecter_delete", middleware(storySelecterDelete))
 
 	http.Handle("/run/status_reset", middleware(runStatusReset))
 	http.Handle("/run/status_list", middleware(runStatusList))
