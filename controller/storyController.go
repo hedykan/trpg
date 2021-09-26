@@ -11,6 +11,7 @@ import (
 */
 
 // 输入输出结构体
+// 可以添加ext扩展，使run控制器根据条件显示故事选项
 type StorySeleter struct {
 	Id  int
 	Val string

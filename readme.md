@@ -43,7 +43,16 @@
     1. val：故事内容
     2. input：输入节点，传节点号
     3. output：输出节点，传节点号
-5. 故事节点删除`/store/node_delete?id` GET
+5. 故事节点删除`/story/node_delete?id` GET
+6. 故事节点链接添加`/story/selecter_add` POST
+    json必传参数：
+    1. nodeId：当前节点号
+    2. linkId：目标链接节点号
+    3. val：选项内容
+7. 故事节点链接删除`/story/selecter_delete` POST
+    json必传参数：
+    1. nodeId：当前节点号
+    2. linkId：目标链接节点号
 
 ### 跑团相关api(pl/kp权限)
 1. 故事运行状态重置`/run/status_reset` GET
