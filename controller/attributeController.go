@@ -87,6 +87,16 @@ func AttrNodeEdit(id int, val string, num int) bool {
 	return true
 }
 
+func AttrNodeNumAdd(id int, num int) bool {
+	if data, ok := AttrNodeMap[id]; ok != true {
+		return false
+	} else {
+		data.Num += num
+		return true
+	}
+}
+
+// 删除属性节点
 func AttrNodeDelete(id int) bool {
 	if _, ok := AttrNodeMap[id]; ok != true {
 		return false
@@ -102,6 +112,7 @@ func AttrNodeDelete(id int) bool {
 	return true
 }
 
+// 保存属性节点
 func attrArrSave(attrArr []AttrNode) {
 	str, err := json.Marshal(attrArr)
 	if err != nil {
