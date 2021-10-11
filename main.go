@@ -28,6 +28,7 @@ func mainInit() {
 	con.StoryInit()
 	con.RunInit()
 	con.AttrInit()
+	con.AuthInit()
 	// 路由服务初始化
 	route.RouteInit()
 	route.LogInit()

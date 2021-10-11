@@ -9,7 +9,7 @@ import (
 type HandlerFunc func(http.ResponseWriter, *http.Request)
 
 func RouteInit() {
-	http.Handle("/", middleware(index))
+	http.Handle("/", checkMiddleware(index))
 	http.Handle("/story/init", middleware(storyInit))
 	http.Handle("/story/load", middleware(storyLoad))
 	http.Handle("/story/list", middleware(storyList))
@@ -41,6 +41,11 @@ func res(data interface{}) map[string]interface{} {
 	res["data"] = data
 	res["msg"] = "ok"
 	return res
+}
+
+func getToken(r *http.Request) string {
+	token := r.Header["Authorization"][0]
+	return token
 }
 
 func get(r *http.Request) map[string]string {

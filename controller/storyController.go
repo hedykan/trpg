@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 )
@@ -29,8 +30,7 @@ var StoryNodeMap map[int]*StoryNode
 var StoryNodeArr []StoryNode
 
 func Test() {
-	StorySelecterAdd(0, 1, "test")
-	StorySelecterDelete(0, 1)
+	fmt.Println("test")
 }
 
 func StoryCreate() {

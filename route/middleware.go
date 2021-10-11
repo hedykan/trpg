@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 	"time"
+
+	con "github.com/trpg/controller"
 )
 
 func logMiddleware(next http.Handler) http.Handler {
@@ -40,8 +42,25 @@ func methodMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+func authMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		token := getToken(r)
+		check := con.AuthCheck(token)
+		if check {
+			next.ServeHTTP(w, r)
+		} else {
+			resInput(w, r, "权限不足")
+			return
+		}
+	})
+}
+
 func middleware(next func(http.ResponseWriter, *http.Request)) http.Handler {
 	return logMiddleware(methodMiddleware(http.HandlerFunc(next)))
+}
+
+func checkMiddleware(next func(http.ResponseWriter, *http.Request)) http.Handler {
+	return logMiddleware(methodMiddleware(authMiddleware(http.HandlerFunc(next))))
 }
 
 func LogInit() {
