@@ -33,6 +33,8 @@ func RouteInit() {
 	http.Handle("/attr/node_add", middleware(attrNodeAdd))
 	http.Handle("/attr/node_edit", middleware(attrNodeEdit))
 	http.Handle("/attr/node_delete", middleware(attrNodeDelete))
+
+	http.Handle("/auth/check", middleware(authCheck))
 }
 
 func res(data interface{}) map[string]interface{} {

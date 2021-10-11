@@ -161,3 +161,8 @@ func attrNodeDelete(w http.ResponseWriter, r *http.Request) {
 	}
 	resInput(w, r, con.AttrNodeDelete(id))
 }
+
+func authCheck(w http.ResponseWriter, r *http.Request) {
+	token := getToken(r)
+	resInput(w, r, con.AuthCheck(token))
+}
