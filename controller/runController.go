@@ -48,6 +48,11 @@ func RunInit() {
 	RunLoad()
 }
 
+// 跑团故事背景获取
+func RunStoryBackgroundGet() StoryBackground {
+	return StoryBackgroundNode
+}
+
 // 跑团状态展示
 func RunStatusList() RunStatus {
 	return Status

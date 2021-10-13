@@ -25,9 +25,14 @@ type StoryNode struct {
 	Output []StorySeleter // []int
 }
 
+type StoryBackground struct {
+	Background string
+}
+
 // 开辟空间后暂时不会被回收
 var StoryNodeMap map[int]*StoryNode
 var StoryNodeArr []StoryNode
+var StoryBackgroundNode StoryBackground
 
 func Test() {
 	fmt.Println("test")
@@ -65,12 +70,31 @@ func StoryLoad() []StoryNode {
 	return StoryNodeArr
 }
 
+func StoryBackgroundLoad() StoryBackground {
+	f, err := ioutil.ReadFile("./file/story_background_example.json")
+	if err != nil {
+		panic(err)
+	}
+	err = json.Unmarshal(f, &StoryBackgroundNode)
+	if err != nil {
+		panic(err)
+	}
+	return StoryBackgroundNode
+}
+
 func StoryInit() {
 	path, _ := os.Getwd()
 	path = path + "/file/story_example.json"
 	FileCheck(path, StoryCreate)
 	StoryLoad()
 	updateNodeMap()
+}
+
+func StroyBackgroundInit() {
+	path, _ := os.Getwd()
+	path = path + "/file/story_background_exampld.json"
+	FileCheck(path, func() {})
+	StoryBackgroundLoad()
 }
 
 // 故事整体展示

@@ -49,7 +49,7 @@ func authMiddleware(next http.Handler) http.Handler {
 		if check {
 			next.ServeHTTP(w, r)
 		} else {
-			resInput(w, r, "权限不足")
+			errResInput(w, r, 201)
 			return
 		}
 	})

@@ -12,8 +12,6 @@ import (
 	route "github.com/trpg/route"
 )
 
-type HandlerFunc func(http.ResponseWriter, *http.Request)
-
 func main() {
 	port := ":12345"
 	mainInit()
@@ -26,6 +24,7 @@ func main() {
 func mainInit() {
 	// 跑团服务初始化
 	con.StoryInit()
+	con.StroyBackgroundInit()
 	con.RunInit()
 	con.AttrInit()
 	con.AuthInit()

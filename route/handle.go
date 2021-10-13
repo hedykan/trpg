@@ -98,6 +98,10 @@ func runStatusList(w http.ResponseWriter, r *http.Request) {
 	resInput(w, r, con.RunStatusList())
 }
 
+func runStoryBackgroundGet(w http.ResponseWriter, r *http.Request) {
+	resInput(w, r, con.RunStoryBackgroundGet())
+}
+
 func runNowNodeGet(w http.ResponseWriter, r *http.Request) {
 	resInput(w, r, con.RunNowNodeGet())
 }
