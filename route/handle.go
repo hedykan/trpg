@@ -110,6 +110,18 @@ func runNowRecordList(w http.ResponseWriter, r *http.Request) {
 	resInput(w, r, con.RunNowRecordList())
 }
 
+func runVoteAdd(w http.ResponseWriter, r *http.Request) {
+	token := getToken(r)
+	query := get(r)
+	id, err := strconv.Atoi(query["id"])
+	if err != nil {
+		panic(err)
+	} else {
+		con.RunVoteAdd(id, token)
+	}
+	resInput(w, r, nil)
+}
+
 func runStep(w http.ResponseWriter, r *http.Request) {
 	query := get(r)
 	id, err := strconv.Atoi(query["id"])

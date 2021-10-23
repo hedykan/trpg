@@ -35,6 +35,7 @@ var StoryNodeArr []StoryNode
 var StoryBackgroundNode StoryBackground
 
 func Test() {
+	fmt.Println(RunNowVoteGet())
 	fmt.Println("test")
 }
 
@@ -104,7 +105,11 @@ func StoryList() []StoryNode {
 
 // 故事节点获取
 func StoryNodeGet(id int) StoryNode {
-	return *StoryNodeMap[id]
+	if data, ok := StoryNodeMap[id]; ok {
+		return *data
+	} else {
+		return StoryNode{}
+	}
 }
 
 func StoryNodeCreate(val string) StoryNode {
@@ -124,7 +129,7 @@ func StoryNodeCreate(val string) StoryNode {
 	return node
 }
 
-// 新增故事节点 TODO 给输入输出节点新增节点
+// 新增故事节点 TODO 输入输出组节点非必须
 func StoryNodeAdd(val string, input []StorySeleter, output []StorySeleter) bool {
 	node := StoryNodeCreate(val)
 	// append后StoryNodeMap的地址和append的地址不同, 需要更新StoryNodeMap
@@ -169,6 +174,7 @@ func StoryNodeLink(val string, linkInput StorySeleter, linkOutput StorySeleter) 
 }
 
 // 故事节点修改
+// TODO 选择组非必须
 func StoryNodeEdit(nodeId int, val string, input []StorySeleter, output []StorySeleter) bool {
 	if data, ok := StoryNodeMap[nodeId]; !ok {
 		return false

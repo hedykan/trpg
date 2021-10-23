@@ -27,6 +27,7 @@ func RouteInit() {
 
 	// 跑团操作
 	http.Handle("/run/status_reset", mid(runStatusReset))
+	http.Handle("/run/vote_add", mid(runVoteAdd))
 	http.Handle("/run/step", mid(runStep))
 	http.Handle("/run/return", mid(runReturn))
 
