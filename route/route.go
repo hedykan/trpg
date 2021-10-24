@@ -45,6 +45,7 @@ func RouteInit() {
 	http.Handle("/run/status_list", mid(runStatusList))
 	http.Handle("/run/story_background_get", mid(runStoryBackgroundGet))
 	http.Handle("/run/now_node_get", mid(runNowNodeGet))
+	http.Handle("/run/now_vote_get", mid(runNowVoteGet))
 	http.Handle("/run/now_record_list", mid(runNowRecordList))
 
 	// 属性操作

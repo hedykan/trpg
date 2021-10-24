@@ -35,7 +35,6 @@ var StoryNodeArr []StoryNode
 var StoryBackgroundNode StoryBackground
 
 func Test() {
-	fmt.Println(RunNowVoteGet())
 	fmt.Println("test")
 }
 

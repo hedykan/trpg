@@ -19,7 +19,7 @@ type RunVoteStatus struct {
 }
 
 type RunVote struct {
-	NodeId         int
+	NodeId         int // 当前节点i
 	VoteStatusList []RunVoteStatus
 }
 
@@ -80,23 +80,17 @@ func RunNowNodeGet() StoryNode {
 	return StoryNodeGet(Status.NowStoryNode)
 }
 
-func RunNowVoteGet() struct {
+type VoteRes struct {
 	NodeId     int
 	VoteStatus []struct {
-		SelecterId int
-		Val        string
-		Num        int
+		Status RunVoteStatus
+		Val    string
 	}
-} {
+}
+
+func RunNowVoteGet() VoteRes {
 	data := Status.RecordVote
-	var res struct {
-		NodeId     int
-		VoteStatus []struct {
-			SelecterId int
-			Val        string
-			Num        int
-		}
-	}
+	var res VoteRes
 	// 查找节点
 	// 回复加工后的RunVote
 	for i := 0; i < len(data); i++ {
@@ -105,13 +99,11 @@ func RunNowVoteGet() struct {
 			find := data[i]
 			res.NodeId = Status.NowStoryNode
 			res.VoteStatus = make([]struct {
-				SelecterId int
-				Val        string
-				Num        int
+				Status RunVoteStatus
+				Val    string
 			}, len(storyNode.Output))
 			for i := 0; i < len(find.VoteStatusList); i++ {
-				res.VoteStatus[i].SelecterId = find.VoteStatusList[i].SelecterId
-				res.VoteStatus[i].Num = find.VoteStatusList[i].Num
+				res.VoteStatus[i].Status = find.VoteStatusList[i]
 				res.VoteStatus[i].Val = storyNode.Output[i].Val
 			}
 			break
