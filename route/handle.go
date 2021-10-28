@@ -115,15 +115,15 @@ func runNowRecordList(w http.ResponseWriter, r *http.Request) {
 }
 
 func runVoteAdd(w http.ResponseWriter, r *http.Request) {
-	token := getToken(r)
+	// token := getToken(r)
+	token := r.RemoteAddr
 	query := get(r)
 	id, err := strconv.Atoi(query["id"])
 	if err != nil {
 		panic(err)
 	} else {
-		con.RunVoteAdd(id, token)
+		resInput(w, r, con.RunVoteAdd(id, token))
 	}
-	resInput(w, r, nil)
 }
 
 func runStep(w http.ResponseWriter, r *http.Request) {
@@ -184,5 +184,10 @@ func attrNodeDelete(w http.ResponseWriter, r *http.Request) {
 
 func authCheck(w http.ResponseWriter, r *http.Request) {
 	token := getToken(r)
-	resInput(w, r, con.AuthCheck(token))
+	resInput(w, r, con.AuthCheck(token, "kp", 0))
+}
+
+func authStatus(w http.ResponseWriter, r *http.Request) {
+	token := getToken(r)
+	resInput(w, r, con.AuthStatus(token))
 }

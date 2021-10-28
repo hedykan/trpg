@@ -10,6 +10,7 @@ import (
 /*
 	底层思想是操作一个故事表，根据输入输出节点决定故事走向
 */
+// TODO 整合故事与背景结构体
 
 // 输入输出结构体
 // 可以添加ext扩展，使run控制器根据条件显示故事选项
@@ -35,6 +36,7 @@ var StoryNodeArr []StoryNode
 var StoryBackgroundNode StoryBackground
 
 func Test() {
+	RunStatusCreate()
 	fmt.Println("test")
 }
 
@@ -202,6 +204,9 @@ func StoryNodeEdit(nodeId int, val string, input []StorySeleter, output []StoryS
 
 // 故事节点删除
 func StoryNodeDelete(nodeId int) {
+	if nodeId == 1 || nodeId == 0 {
+		return
+	}
 	data, ok := StoryNodeMap[nodeId]
 	if ok {
 		var index int

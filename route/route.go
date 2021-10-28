@@ -40,6 +40,7 @@ func RouteInit() {
 	mid = middleware
 	// 身份确认
 	http.Handle("/auth/check", mid(authCheck))
+	http.Handle("/auth/status", mid(authStatus))
 
 	// 跑团操作
 	http.Handle("/run/status_list", mid(runStatusList))

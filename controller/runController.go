@@ -15,12 +15,12 @@ import (
 type RunVoteStatus struct {
 	SelecterId int
 	Num        int
-	TokenList  []string
 }
 
 type RunVote struct {
 	NodeId         int // 当前节点i
 	VoteStatusList []RunVoteStatus
+	TokenList      []string
 }
 
 type RunStatus struct {
@@ -138,20 +138,22 @@ func RunVoteCreate(nodeId int) (RunVote, error) {
 }
 
 // 节点id投票
-func RunVoteAdd(selecterId int, token string) {
-	ok := searchSelecterId(StoryNodeMap[Status.NowStoryNode].Output, selecterId)
-	if ok == -1 {
-		return
+func RunVoteAdd(selecterId int, token string) bool {
+	index := searchSelecterId(StoryNodeMap[Status.NowStoryNode].Output, selecterId)
+	if index == -1 {
+		return false
 	}
-	data := &Status.RecordVote[len(Status.RecordVote)-1].VoteStatusList[ok]
-	ok = searchToken2List(data.TokenList, token)
+	data := &Status.RecordVote[len(Status.RecordVote)-1]
+	ok := searchToken2List(data.TokenList, token)
 	if ok != -1 {
-		return
+		return false
 	}
 	// 投票+1
-	data.Num += 1
+	data.VoteStatusList[index].Num += 1
 	data.TokenList = append(data.TokenList, token)
 	runStatusSave(Status)
+
+	return true
 }
 
 func searchToken2List(tokenArr []string, token string) int {

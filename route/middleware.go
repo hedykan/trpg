@@ -45,7 +45,7 @@ func methodMiddleware(next http.Handler) http.Handler {
 func authMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token := getToken(r)
-		check := con.AuthCheck(token)
+		check := con.AuthCheck(token, "kp", 0)
 		if check {
 			next.ServeHTTP(w, r)
 		} else {
