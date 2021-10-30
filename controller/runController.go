@@ -112,7 +112,7 @@ func RunNowVoteGet() VoteRes {
 	return res
 }
 
-// 跑团已经过节点查询
+// 跑团经过节点查询
 func RunNowRecordList() []StoryNode {
 	var res []StoryNode
 	for i := 0; i < (len(Status.RecordStoryNode) - 1); i++ {
@@ -156,13 +156,14 @@ func RunVoteAdd(selecterId int, token string) bool {
 	return true
 }
 
-func searchToken2List(tokenArr []string, token string) int {
-	for i := 0; i < len(tokenArr); i++ {
-		if tokenArr[i] == token {
-			return i
-		}
+// 节点id清理
+// 根据节点修改后的选择重置
+func RunVoteClear(nodeId int) {
+	index := searchVoteIndex(Status.RecordVote, nodeId)
+	if index == -1 {
+		return
 	}
-	return -1
+	Status.RecordVote[index], _ = RunVoteCreate(nodeId)
 }
 
 // 步骤执行
@@ -181,11 +182,14 @@ func RunStep(nodeId int) {
 }
 
 // 步骤回退
+// 投票也重设
 func RunReturn(nodeId int) {
 	index := searchId(Status.RecordStoryNode, nodeId)
 	if index != -1 {
 		Status.NowStoryNode = nodeId
-		Status.RecordStoryNode = Status.RecordStoryNode[:index+1]
+		Status.RecordStoryNode = Status.RecordStoryNode[:index+1] // 截到目标点
+		Status.RecordVote = Status.RecordVote[:index+1]           // 截到目标点
+		RunVoteClear(nodeId)
 		runStatusSave(Status)
 	}
 }
@@ -197,4 +201,23 @@ func runStatusSave(status RunStatus) {
 		fmt.Println("transfer err", err)
 	}
 	ioutil.WriteFile("file/status_example.json", str, 0644)
+}
+
+// 查询token表
+func searchToken2List(tokenArr []string, token string) int {
+	for i := 0; i < len(tokenArr); i++ {
+		if tokenArr[i] == token {
+			return i
+		}
+	}
+	return -1
+}
+
+func searchVoteIndex(arr []RunVote, nodeId int) int {
+	for i := 0; i < len(arr); i++ {
+		if arr[i].NodeId == nodeId {
+			return i
+		}
+	}
+	return -1
 }

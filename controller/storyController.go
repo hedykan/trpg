@@ -36,7 +36,7 @@ var StoryNodeArr []StoryNode
 var StoryBackgroundNode StoryBackground
 
 func Test() {
-	RunStatusCreate()
+	// RunStatusCreate()
 	fmt.Println("test")
 }
 
@@ -176,6 +176,8 @@ func StoryNodeLink(val string, linkInput StorySeleter, linkOutput StorySeleter) 
 
 // 故事节点修改
 // TODO 选择组非必须
+// 更新投票节点
+// 如果节点已跑，输出节点不可改
 func StoryNodeEdit(nodeId int, val string, input []StorySeleter, output []StorySeleter) bool {
 	if data, ok := StoryNodeMap[nodeId]; !ok {
 		return false
