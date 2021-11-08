@@ -18,14 +18,13 @@ func main() {
 	fmt.Printf("server port%s\n", port)
 	openHtml()
 	http.ListenAndServe(port, nil)
+	fmt.Println("good bye")
 	return
 }
 
 func mainInit() {
 	// 跑团服务初始化
-	con.StoryInit()
-	con.StroyBackgroundInit()
-	con.RunInit()
+	con.RoomInit()
 	con.AttrInit()
 	con.AuthInit()
 	// 路由服务初始化

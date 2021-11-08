@@ -6,8 +6,8 @@ type AuthTokenDetail struct {
 }
 
 type AuthRunningNode struct {
-	StoryId int
-	Role    string // kp, pc, 观察者
+	RoomId int
+	Role   string // kp, pc, 观察者
 	// 操控角色
 }
 
@@ -21,8 +21,8 @@ func AuthInit() {
 		Token: "13570890160",
 		OwnRunning: []AuthRunningNode{
 			{
-				StoryId: 0,
-				Role:    "kp",
+				RoomId: 0,
+				Role:   "kp",
 			},
 		},
 	}
@@ -30,12 +30,12 @@ func AuthInit() {
 }
 
 // token可用检测
-func AuthCheck(token string, role string, storyId int) bool {
+func AuthCheck(token string, role string, RoomId int) bool {
 	data, ok := AuthTokenMap[token]
 	if !ok {
 		return false
 	} else {
-		runningNode := getAuthRunning(data.OwnRunning, storyId)
+		runningNode := getAuthRunning(data.OwnRunning, RoomId)
 		if runningNode != nil {
 			return runningNode.Role == role
 		} else {
@@ -45,9 +45,9 @@ func AuthCheck(token string, role string, storyId int) bool {
 }
 
 // 获取跑团故事详细
-func getAuthRunning(arr []AuthRunningNode, storyId int) *AuthRunningNode {
+func getAuthRunning(arr []AuthRunningNode, roomId int) *AuthRunningNode {
 	for i := 0; i < len(arr); i++ {
-		if arr[i].StoryId == storyId {
+		if arr[i].RoomId == roomId {
 			return &arr[i]
 		}
 	}

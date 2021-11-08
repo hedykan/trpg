@@ -19,7 +19,6 @@ func RouteInit() {
 	http.Handle("/story/list", mid(storyList))
 	http.Handle("/story/get", mid(storyGet))
 	http.Handle("/story/node_add", mid(storyNodeAdd))
-	// http.Handle("/story/node_link", mid(storyNodeLink))
 	http.Handle("/story/node_edit", mid(storyNodeEdit))
 	http.Handle("/story/node_delete", mid(storyNodeDelete))
 	http.Handle("/story/selecter_add", mid(storySelecterAdd))
@@ -80,6 +79,14 @@ func getToken(r *http.Request) string {
 	} else {
 		return ""
 	}
+}
+
+func getIp(r *http.Request) string {
+	ip := r.Header.Get("Remote-Addr")
+	if ip == "" {
+		ip = r.RemoteAddr
+	}
+	return ip
 }
 
 func get(r *http.Request) map[string]string {

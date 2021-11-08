@@ -1,6 +1,7 @@
 package route
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -8,142 +9,193 @@ import (
 )
 
 func index(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(getIp(r))
 	con.Test()
 	resInput(w, r, nil)
 }
 
 func storyInit(w http.ResponseWriter, r *http.Request) {
 	con.StoryCreate()
-	resInput(w, r, con.StoryLoad())
+	// resInput(w, r, con.StoryLoad(con.StoryNodeArr, con.Addr))
 }
 
 func storyLoad(w http.ResponseWriter, r *http.Request) {
-	resInput(w, r, con.StoryLoad())
+	// resInput(w, r, con.StoryLoad(con.StoryNodeArr, con.Addr))
 }
 
 func storyList(w http.ResponseWriter, r *http.Request) {
-	resInput(w, r, con.StoryList())
+	query := get(r)
+	id, err := strconv.Atoi(query["roomId"])
+	if err != nil {
+		panic(err)
+	}
+	resInput(w, r, con.RoomStoryList(id))
 }
 
 func storyGet(w http.ResponseWriter, r *http.Request) {
 	query := get(r)
-	id, err := strconv.Atoi(query["id"])
+	nodeid, err := strconv.Atoi(query["nodeId"])
 	if err != nil {
 		panic(err)
 	}
-	resInput(w, r, con.StoryNodeGet(id))
+	roomId, err := strconv.Atoi(query["roomId"])
+	if err != nil {
+		panic(err)
+	}
+	resInput(w, r, con.RoomStoryNodeGet(roomId, nodeid))
 }
 
 func storyNodeAdd(w http.ResponseWriter, r *http.Request) {
-	var query con.StoryNode
-	postJson(r, &query)
-	ok := con.StoryNodeAdd(query.Val, query.Input, query.Output)
-	resInput(w, r, ok)
-}
-
-func storyNodeLink(w http.ResponseWriter, r *http.Request) {
 	var query struct {
+		RoomId int
 		Val    string
-		Input  con.StorySeleter
-		Output con.StorySeleter
+		Input  []con.StorySeleter
+		Output []con.StorySeleter
 	}
 	postJson(r, &query)
-	ok := con.StoryNodeLink(query.Val, query.Input, query.Output)
+	ok := con.RoomStoryNodeAdd(query.RoomId, query.Val, query.Input, query.Output)
 	resInput(w, r, ok)
 }
 
 func storyNodeEdit(w http.ResponseWriter, r *http.Request) {
-	var query con.StoryNode
+	var query struct {
+		RoomId int
+		NodeId int
+		Val    string
+		Input  []con.StorySeleter
+		Output []con.StorySeleter
+	}
 	postJson(r, &query)
-	ok := con.StoryNodeEdit(query.Id, query.Val, query.Input, query.Output)
+	ok := con.RoomStoryNodeEdit(query.RoomId, query.NodeId, query.Val, query.Input, query.Output)
 	resInput(w, r, ok)
 }
 
 func storyNodeDelete(w http.ResponseWriter, r *http.Request) {
 	query := get(r)
-	id, err := strconv.Atoi(query["id"])
+	nodeId, err := strconv.Atoi(query["nodeId"])
 	if err != nil {
 		panic(err)
-	} else {
-		con.StoryNodeDelete(id)
 	}
+	roomId, err := strconv.Atoi(query["roomId"])
+	if err != nil {
+		panic(err)
+	}
+	con.RoomStoryNodeDelete(roomId, nodeId)
 	resInput(w, r, nil)
 }
 
 func storySelecterAdd(w http.ResponseWriter, r *http.Request) {
 	var query struct {
+		RoomId int
 		NodeId int
 		LinkId int
 		Val    string
 	}
 	postJson(r, &query)
-	resInput(w, r, con.StorySelecterAdd(query.NodeId, query.LinkId, query.Val))
+
+	resInput(w, r, con.RoomStorySelecterAdd(query.RoomId, query.NodeId, query.LinkId, query.Val))
 }
 
 func storySelecterDelete(w http.ResponseWriter, r *http.Request) {
 	var query struct {
+		RoomId int
 		NodeId int
 		LinkId int
 	}
 	postJson(r, &query)
-	resInput(w, r, con.StorySelecterDelete(query.NodeId, query.LinkId))
+	resInput(w, r, con.RoomStorySelecterDelete(query.RoomId, query.NodeId, query.LinkId))
 }
 
 func runStatusReset(w http.ResponseWriter, r *http.Request) {
-	con.RunStatusCreate()
+	// con.RunStatusCreate()
 	resInput(w, r, nil)
 }
 
 func runStatusList(w http.ResponseWriter, r *http.Request) {
-	resInput(w, r, con.RunStatusList())
+	query := get(r)
+	roomId, err := strconv.Atoi(query["roomId"])
+	if err != nil {
+		panic(err)
+	}
+	resInput(w, r, con.RoomRunStatusList(roomId))
 }
 
 func runStoryBackgroundGet(w http.ResponseWriter, r *http.Request) {
-	resInput(w, r, con.RunStoryBackgroundGet())
+	query := get(r)
+	roomId, err := strconv.Atoi(query["roomId"])
+	if err != nil {
+		panic(err)
+	}
+	resInput(w, r, con.RoomRunBackgroundGet(roomId))
 }
 
 func runNowNodeGet(w http.ResponseWriter, r *http.Request) {
-	resInput(w, r, con.RunNowNodeGet())
+	query := get(r)
+	roomId, err := strconv.Atoi(query["roomId"])
+	if err != nil {
+		panic(err)
+	}
+	resInput(w, r, con.RoomRunNowNodeGet(roomId))
 }
 
 func runNowVoteGet(w http.ResponseWriter, r *http.Request) {
-	resInput(w, r, con.RunNowVoteGet())
+	query := get(r)
+	roomId, err := strconv.Atoi(query["roomId"])
+	if err != nil {
+		panic(err)
+	}
+	resInput(w, r, con.RoomRunNowVoteGet(roomId))
 }
 
 func runNowRecordList(w http.ResponseWriter, r *http.Request) {
-	resInput(w, r, con.RunNowRecordList())
+	query := get(r)
+	roomId, err := strconv.Atoi(query["roomId"])
+	if err != nil {
+		panic(err)
+	}
+	resInput(w, r, con.RoomRunNowRecordList(roomId))
 }
 
 func runVoteAdd(w http.ResponseWriter, r *http.Request) {
 	// token := getToken(r)
-	token := r.RemoteAddr
+	token := getIp(r)
 	query := get(r)
-	id, err := strconv.Atoi(query["id"])
+	nodeId, err := strconv.Atoi(query["nodeId"])
 	if err != nil {
 		panic(err)
-	} else {
-		resInput(w, r, con.RunVoteAdd(id, token))
 	}
+	roomId, err := strconv.Atoi(query["roomId"])
+	if err != nil {
+		panic(err)
+	}
+	resInput(w, r, con.RoomRunVoteAdd(roomId, nodeId, token))
 }
 
 func runStep(w http.ResponseWriter, r *http.Request) {
 	query := get(r)
-	id, err := strconv.Atoi(query["id"])
+	nodeId, err := strconv.Atoi(query["nodeId"])
 	if err != nil {
 		panic(err)
-	} else {
-		con.RunStep(id)
 	}
+	roomId, err := strconv.Atoi(query["roomId"])
+	if err != nil {
+		panic(err)
+	}
+	con.RoomRunStep(roomId, nodeId)
 	resInput(w, r, nil)
 }
 
 func runReturn(w http.ResponseWriter, r *http.Request) {
 	query := get(r)
-	id, err := strconv.Atoi(query["id"])
+	nodeId, err := strconv.Atoi(query["nodeId"])
 	if err != nil {
 		panic(err)
 	}
-	con.RunReturn(id)
+	roomId, err := strconv.Atoi(query["roomId"])
+	if err != nil {
+		panic(err)
+	}
+	con.RoomRunReturn(roomId, nodeId)
 	resInput(w, r, nil)
 }
 

@@ -1,11 +1,7 @@
 package controller
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
-	"io/ioutil"
-	"os"
 )
 
 /*
@@ -29,55 +25,29 @@ type RunStatus struct {
 	RecordVote      []RunVote
 }
 
-var Status RunStatus
+// var Status RunStatus
 
 // 跑团状态新建
-func RunStatusCreate() {
-	RunVoteNew, err := RunVoteCreate(0)
+func RunStatusCreate(storyNodeMap map[int]*StoryNode) *RunStatus {
+	runVoteNew, err := RunVoteCreate(storyNodeMap, 0)
 	if err != nil {
 		panic(err)
 	}
-	Status = RunStatus{
+	return &RunStatus{
 		NowStoryNode:    0,
 		RecordStoryNode: []int{0},
-		RecordVote:      []RunVote{RunVoteNew},
+		RecordVote:      []RunVote{runVoteNew},
 	}
-	runStatusSave(Status)
-}
-
-// 跑团加载
-func RunLoad() {
-	f, err := ioutil.ReadFile("./file/status_example.json")
-	if err != nil {
-		fmt.Println("read fail", err)
-	}
-	err = json.Unmarshal(f, &Status)
-	if err != nil {
-		fmt.Println("json decode fail", err)
-	}
-}
-
-// 跑团状态初始化
-func RunInit() {
-	path, _ := os.Getwd()
-	path = path + "/file/status_example.json"
-	FileCheck(path, RunStatusCreate)
-	RunLoad()
-}
-
-// 跑团故事背景获取
-func RunStoryBackgroundGet() StoryBackground {
-	return StoryBackgroundNode
 }
 
 // 跑团状态展示
-func RunStatusList() RunStatus {
-	return Status
+func RunStatusList(status RunStatus) RunStatus {
+	return status
 }
 
 // 跑团当前节点查询
-func RunNowNodeGet() StoryNode {
-	return StoryNodeGet(Status.NowStoryNode)
+func RunNowNodeGet(storyNodeMap map[int]*StoryNode, status RunStatus) StoryNode {
+	return StoryNodeGet(storyNodeMap, status.NowStoryNode)
 }
 
 type VoteRes struct {
@@ -88,16 +58,16 @@ type VoteRes struct {
 	}
 }
 
-func RunNowVoteGet() VoteRes {
-	data := Status.RecordVote
+func RunNowVoteGet(storyNodeMap map[int]*StoryNode, status RunStatus) VoteRes {
+	data := status.RecordVote
 	var res VoteRes
 	// 查找节点
 	// 回复加工后的RunVote
 	for i := 0; i < len(data); i++ {
-		if data[i].NodeId == Status.NowStoryNode {
-			storyNode := RunNowNodeGet()
+		if data[i].NodeId == status.NowStoryNode {
+			storyNode := RunNowNodeGet(storyNodeMap, status)
 			find := data[i]
-			res.NodeId = Status.NowStoryNode
+			res.NodeId = status.NowStoryNode
 			res.VoteStatus = make([]struct {
 				Status RunVoteStatus
 				Val    string
@@ -113,18 +83,18 @@ func RunNowVoteGet() VoteRes {
 }
 
 // 跑团经过节点查询
-func RunNowRecordList() []StoryNode {
+func RunNowRecordList(storyNodeMap map[int]*StoryNode, status RunStatus) []StoryNode {
 	var res []StoryNode
-	for i := 0; i < (len(Status.RecordStoryNode) - 1); i++ {
-		res = append(res, *StoryNodeMap[Status.RecordStoryNode[i]])
+	for i := 0; i < (len(status.RecordStoryNode) - 1); i++ {
+		res = append(res, *storyNodeMap[status.RecordStoryNode[i]])
 	}
 	return res
 }
 
 // 节点投票创建
-func RunVoteCreate(nodeId int) (RunVote, error) {
+func RunVoteCreate(storyNodeMap map[int]*StoryNode, nodeId int) (RunVote, error) {
 	VoteNode := RunVote{}
-	if data, ok := StoryNodeMap[nodeId]; ok {
+	if data, ok := storyNodeMap[nodeId]; ok {
 		VoteNode.NodeId = data.Id
 		// 创建投票列表
 		for i := 0; i < len(data.Output); i++ {
@@ -138,12 +108,12 @@ func RunVoteCreate(nodeId int) (RunVote, error) {
 }
 
 // 节点id投票
-func RunVoteAdd(selecterId int, token string) bool {
-	index := searchSelecterId(StoryNodeMap[Status.NowStoryNode].Output, selecterId)
+func RunVoteAdd(storyNodeMap map[int]*StoryNode, status RunStatus, selecterId int, token string) bool {
+	index := searchSelecterId(storyNodeMap[status.NowStoryNode].Output, selecterId)
 	if index == -1 {
 		return false
 	}
-	data := &Status.RecordVote[len(Status.RecordVote)-1]
+	data := &status.RecordVote[len(status.RecordVote)-1]
 	ok := searchToken2List(data.TokenList, token)
 	if ok != -1 {
 		return false
@@ -151,56 +121,44 @@ func RunVoteAdd(selecterId int, token string) bool {
 	// 投票+1
 	data.VoteStatusList[index].Num += 1
 	data.TokenList = append(data.TokenList, token)
-	runStatusSave(Status)
 
 	return true
 }
 
 // 节点id清理
 // 根据节点修改后的选择重置
-func RunVoteClear(nodeId int) {
-	index := searchVoteIndex(Status.RecordVote, nodeId)
+func RunVoteClear(storyNodeMap map[int]*StoryNode, status RunStatus, nodeId int) {
+	index := searchVoteIndex(status.RecordVote, nodeId)
 	if index == -1 {
 		return
 	}
-	Status.RecordVote[index], _ = RunVoteCreate(nodeId)
+	status.RecordVote[index], _ = RunVoteCreate(storyNodeMap, nodeId)
 }
 
 // 步骤执行
-func RunStep(nodeId int) {
+func RunStep(storyNodeMap map[int]*StoryNode, status RunStatus, nodeId int) {
 	// 确定有当地故事节点可以进入目标节点
-	ok := searchSelecterId(StoryNodeMap[Status.NowStoryNode].Output, nodeId)
+	ok := searchSelecterId(storyNodeMap[status.NowStoryNode].Output, nodeId)
 	if ok == -1 {
 		return
 	}
 	// 设置状态
-	Status.NowStoryNode = nodeId
-	Status.RecordStoryNode = append(Status.RecordStoryNode, nodeId)
-	VoteNode, _ := RunVoteCreate(nodeId)
-	Status.RecordVote = append(Status.RecordVote, VoteNode)
-	runStatusSave(Status)
+	status.NowStoryNode = nodeId
+	status.RecordStoryNode = append(status.RecordStoryNode, nodeId)
+	VoteNode, _ := RunVoteCreate(storyNodeMap, nodeId)
+	status.RecordVote = append(status.RecordVote, VoteNode)
 }
 
 // 步骤回退
 // 投票也重设
-func RunReturn(nodeId int) {
-	index := searchId(Status.RecordStoryNode, nodeId)
+func RunReturn(storyNodeMap map[int]*StoryNode, status RunStatus, nodeId int) {
+	index := searchId(status.RecordStoryNode, nodeId)
 	if index != -1 {
-		Status.NowStoryNode = nodeId
-		Status.RecordStoryNode = Status.RecordStoryNode[:index+1] // 截到目标点
-		Status.RecordVote = Status.RecordVote[:index+1]           // 截到目标点
-		RunVoteClear(nodeId)
-		runStatusSave(Status)
+		status.NowStoryNode = nodeId
+		status.RecordStoryNode = status.RecordStoryNode[:index+1] // 截到目标点
+		status.RecordVote = status.RecordVote[:index+1]           // 截到目标点
+		RunVoteClear(storyNodeMap, status, nodeId)
 	}
-}
-
-// 保存跑团状态
-func runStatusSave(status RunStatus) {
-	str, err := json.Marshal(status)
-	if err != nil {
-		fmt.Println("transfer err", err)
-	}
-	ioutil.WriteFile("file/status_example.json", str, 0644)
 }
 
 // 查询token表

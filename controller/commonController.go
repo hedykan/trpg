@@ -5,13 +5,16 @@ import (
 	"strings"
 )
 
-func FileCheck(path string, function func()) {
+func FileCheck(path string, function func()) bool {
 	_, err := os.Stat(path)
 	if err != nil {
 		strArr := strings.Split(path, "/")
 		dir := strings.Join(strArr[:len(strArr)-1], "/")
 		DirCheck(dir)
 		function()
+		return false
+	} else {
+		return true
 	}
 }
 
