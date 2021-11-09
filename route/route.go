@@ -14,8 +14,8 @@ func RouteInit() {
 	mid := checkMiddleware
 	// 故事
 	http.Handle("/", mid(index))
-	http.Handle("/story/init", mid(storyInit))
-	http.Handle("/story/load", mid(storyLoad))
+	// http.Handle("/story/init", mid(storyInit))
+	// http.Handle("/story/load", mid(storyLoad))
 	http.Handle("/story/list", mid(storyList))
 	http.Handle("/story/get", mid(storyGet))
 	http.Handle("/story/node_add", mid(storyNodeAdd))
@@ -25,7 +25,7 @@ func RouteInit() {
 	http.Handle("/story/selecter_delete", mid(storySelecterDelete))
 
 	// 跑团操作
-	http.Handle("/run/status_reset", mid(runStatusReset))
+	// http.Handle("/run/status_reset", mid(runStatusReset))
 	http.Handle("/run/step", mid(runStep))
 	http.Handle("/run/return", mid(runReturn))
 

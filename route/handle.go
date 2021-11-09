@@ -14,14 +14,14 @@ func index(w http.ResponseWriter, r *http.Request) {
 	resInput(w, r, nil)
 }
 
-func storyInit(w http.ResponseWriter, r *http.Request) {
-	con.StoryCreate()
-	// resInput(w, r, con.StoryLoad(con.StoryNodeArr, con.Addr))
-}
+// func storyInit(w http.ResponseWriter, r *http.Request) {
+// 	con.StoryCreate()
+// 	// resInput(w, r, con.StoryLoad(con.StoryNodeArr, con.Addr))
+// }
 
-func storyLoad(w http.ResponseWriter, r *http.Request) {
-	// resInput(w, r, con.StoryLoad(con.StoryNodeArr, con.Addr))
-}
+// func storyLoad(w http.ResponseWriter, r *http.Request) {
+// 	// resInput(w, r, con.StoryLoad(con.StoryNodeArr, con.Addr))
+// }
 
 func storyList(w http.ResponseWriter, r *http.Request) {
 	query := get(r)
@@ -106,10 +106,10 @@ func storySelecterDelete(w http.ResponseWriter, r *http.Request) {
 	resInput(w, r, con.RoomStorySelecterDelete(query.RoomId, query.NodeId, query.LinkId))
 }
 
-func runStatusReset(w http.ResponseWriter, r *http.Request) {
-	// con.RunStatusCreate()
-	resInput(w, r, nil)
-}
+// func runStatusReset(w http.ResponseWriter, r *http.Request) {
+// 	// con.RunStatusCreate()
+// 	resInput(w, r, nil)
+// }
 
 func runStatusList(w http.ResponseWriter, r *http.Request) {
 	query := get(r)
