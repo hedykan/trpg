@@ -80,6 +80,11 @@ func StatusTransfer(status model.RunStatus) RunStatus {
 
 func StatusTransferModel(status RunStatus) model.RunStatus {
 	var res model.RunStatus
+	res = model.RunStatus{
+		NowStoryNode:    status.NowStoryNode,
+		RecordStoryNode: status.RecordStoryNode,
+		RecordVote:      VoteTransferModel(status.RecordVote),
+	}
 	return res
 }
 
@@ -97,6 +102,13 @@ func VoteTransfer(voteArr []model.RunVote) []RunVote {
 
 func VoteTransferModel(voteArr []RunVote) []model.RunVote {
 	var res []model.RunVote
+	for i := 0; i < len(voteArr); i++ {
+		res = append(res, model.RunVote{
+			NodeId:         voteArr[i].NodeId,
+			VoteStatusList: VoteStatusArrTransferModel(voteArr[i].VoteStatusList),
+			TokenList:      voteArr[i].TokenList,
+		})
+	}
 	return res
 }
 
@@ -104,6 +116,17 @@ func VoteStatusArrTransfer(voteStatusArr []model.RunVoteStatus) []RunVoteStatus 
 	var res []RunVoteStatus
 	for i := 0; i < len(voteStatusArr); i++ {
 		res = append(res, RunVoteStatus{
+			SelecterId: voteStatusArr[i].SelecterId,
+			Num:        voteStatusArr[i].Num,
+		})
+	}
+	return res
+}
+
+func VoteStatusArrTransferModel(voteStatusArr []RunVoteStatus) []model.RunVoteStatus {
+	var res []model.RunVoteStatus
+	for i := 0; i < len(voteStatusArr); i++ {
+		res = append(res, model.RunVoteStatus{
 			SelecterId: voteStatusArr[i].SelecterId,
 			Num:        voteStatusArr[i].Num,
 		})
@@ -148,6 +171,8 @@ func RoomTransferModel(room Room) model.Room {
 	res = model.Room{
 		RoomId:        room.RoomId,
 		StoryNodeList: StoryNodeArrTransferModel(room.StoryNodeList),
+		Background:    model.StoryBackground(room.Background),
+		Status:        StatusTransferModel(room.Status),
 	}
 	return res
 }

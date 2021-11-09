@@ -46,7 +46,7 @@ func RunStatusList(status RunStatus) RunStatus {
 }
 
 // 跑团当前节点查询
-func RunNowNodeGet(storyNodeMap map[int]*StoryNode, status RunStatus) StoryNode {
+func RunNowNodeGet(storyNodeMap map[int]*StoryNode, status *RunStatus) StoryNode {
 	return StoryNodeGet(storyNodeMap, status.NowStoryNode)
 }
 
@@ -58,7 +58,7 @@ type VoteRes struct {
 	}
 }
 
-func RunNowVoteGet(storyNodeMap map[int]*StoryNode, status RunStatus) VoteRes {
+func RunNowVoteGet(storyNodeMap map[int]*StoryNode, status *RunStatus) VoteRes {
 	data := status.RecordVote
 	var res VoteRes
 	// 查找节点
@@ -83,7 +83,7 @@ func RunNowVoteGet(storyNodeMap map[int]*StoryNode, status RunStatus) VoteRes {
 }
 
 // 跑团经过节点查询
-func RunNowRecordList(storyNodeMap map[int]*StoryNode, status RunStatus) []StoryNode {
+func RunNowRecordList(storyNodeMap map[int]*StoryNode, status *RunStatus) []StoryNode {
 	var res []StoryNode
 	for i := 0; i < (len(status.RecordStoryNode) - 1); i++ {
 		res = append(res, *storyNodeMap[status.RecordStoryNode[i]])
@@ -108,7 +108,7 @@ func RunVoteCreate(storyNodeMap map[int]*StoryNode, nodeId int) (RunVote, error)
 }
 
 // 节点id投票
-func RunVoteAdd(storyNodeMap map[int]*StoryNode, status RunStatus, selecterId int, token string) bool {
+func RunVoteAdd(storyNodeMap map[int]*StoryNode, status *RunStatus, selecterId int, token string) bool {
 	index := searchSelecterId(storyNodeMap[status.NowStoryNode].Output, selecterId)
 	if index == -1 {
 		return false
@@ -127,16 +127,21 @@ func RunVoteAdd(storyNodeMap map[int]*StoryNode, status RunStatus, selecterId in
 
 // 节点id清理
 // 根据节点修改后的选择重置
-func RunVoteClear(storyNodeMap map[int]*StoryNode, status RunStatus, nodeId int) {
+func RunVoteClear(storyNodeMap map[int]*StoryNode, status *RunStatus, nodeId int) {
 	index := searchVoteIndex(status.RecordVote, nodeId)
-	if index == -1 {
+	// 清除目标投票
+	if index != -1 {
+		status.RecordVote = append(status.RecordVote[:index], status.RecordVote[index+1:]...)
+	}
+	runVote, err := RunVoteCreate(storyNodeMap, nodeId)
+	if err != nil {
 		return
 	}
-	status.RecordVote[index], _ = RunVoteCreate(storyNodeMap, nodeId)
+	status.RecordVote = append(status.RecordVote, runVote)
 }
 
 // 步骤执行
-func RunStep(storyNodeMap map[int]*StoryNode, status RunStatus, nodeId int) {
+func RunStep(storyNodeMap map[int]*StoryNode, status *RunStatus, nodeId int) {
 	// 确定有当地故事节点可以进入目标节点
 	ok := searchSelecterId(storyNodeMap[status.NowStoryNode].Output, nodeId)
 	if ok == -1 {
@@ -145,13 +150,13 @@ func RunStep(storyNodeMap map[int]*StoryNode, status RunStatus, nodeId int) {
 	// 设置状态
 	status.NowStoryNode = nodeId
 	status.RecordStoryNode = append(status.RecordStoryNode, nodeId)
-	VoteNode, _ := RunVoteCreate(storyNodeMap, nodeId)
-	status.RecordVote = append(status.RecordVote, VoteNode)
+	voteNode, _ := RunVoteCreate(storyNodeMap, nodeId)
+	status.RecordVote = append(status.RecordVote, voteNode)
 }
 
 // 步骤回退
 // 投票也重设
-func RunReturn(storyNodeMap map[int]*StoryNode, status RunStatus, nodeId int) {
+func RunReturn(storyNodeMap map[int]*StoryNode, status *RunStatus, nodeId int) {
 	index := searchId(status.RecordStoryNode, nodeId)
 	if index != -1 {
 		status.NowStoryNode = nodeId

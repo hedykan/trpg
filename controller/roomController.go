@@ -136,7 +136,7 @@ func RoomRunStatusList(roomId int) RunStatus {
 func RoomRunNowNodeGet(roomId int) StoryNode {
 	return RunNowNodeGet(
 		RoomMap[roomId].StoryNodeMap,
-		RoomMap[roomId].Status,
+		&RoomMap[roomId].Status,
 	)
 }
 
@@ -144,7 +144,7 @@ func RoomRunNowNodeGet(roomId int) StoryNode {
 func RoomRunNowVoteGet(roomId int) VoteRes {
 	return RunNowVoteGet(
 		RoomMap[roomId].StoryNodeMap,
-		RoomMap[roomId].Status,
+		&RoomMap[roomId].Status,
 	)
 }
 
@@ -152,7 +152,7 @@ func RoomRunNowVoteGet(roomId int) VoteRes {
 func RoomRunNowRecordList(roomId int) []StoryNode {
 	return RunNowRecordList(
 		RoomMap[roomId].StoryNodeMap,
-		RoomMap[roomId].Status,
+		&RoomMap[roomId].Status,
 	)
 }
 
@@ -160,7 +160,7 @@ func RoomRunNowRecordList(roomId int) []StoryNode {
 func RoomRunVoteAdd(roomId int, selecterId int, token string) bool {
 	ok := RunVoteAdd(
 		RoomMap[roomId].StoryNodeMap,
-		RoomMap[roomId].Status,
+		&RoomMap[roomId].Status,
 		selecterId,
 		token,
 	)
@@ -172,17 +172,17 @@ func RoomRunVoteAdd(roomId int, selecterId int, token string) bool {
 func RoomRunStep(roomId int, nodeId int) {
 	RunStep(
 		RoomMap[roomId].StoryNodeMap,
-		RoomMap[roomId].Status,
+		&RoomMap[roomId].Status,
 		nodeId,
 	)
-	go model.RoomSave(RoomTransferModel(*RoomMap[roomId]))
+	model.RoomSave(RoomTransferModel(*RoomMap[roomId]))
 }
 
 // 跑团步骤回退
 func RoomRunReturn(roomId int, nodeId int) {
 	RunReturn(
 		RoomMap[roomId].StoryNodeMap,
-		RoomMap[roomId].Status,
+		&RoomMap[roomId].Status,
 		nodeId,
 	)
 	go model.RoomSave(RoomTransferModel(*RoomMap[roomId]))

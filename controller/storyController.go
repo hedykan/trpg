@@ -245,6 +245,15 @@ func searchId(idArr []int, id int) int {
 	return -1
 }
 
+func searchIdReverse(idArr []int, id int) int {
+	for i := len(idArr) - 1; i >= 0; i-- {
+		if id == idArr[i] {
+			return i
+		}
+	}
+	return -1
+}
+
 func searchStoryId(arr []StoryNode, id int) int {
 	for i := 0; i < len(arr); i++ {
 		if id == arr[i].Id {
