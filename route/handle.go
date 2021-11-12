@@ -234,6 +234,10 @@ func attrNodeDelete(w http.ResponseWriter, r *http.Request) {
 	resInput(w, r, con.AttrNodeDelete(id))
 }
 
+func roomList(w http.ResponseWriter, r *http.Request) {
+	resInput(w, r, con.RoomList())
+}
+
 func authCheck(w http.ResponseWriter, r *http.Request) {
 	token := getToken(r)
 	resInput(w, r, con.AuthCheck(token, "kp", 0))

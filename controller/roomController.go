@@ -47,8 +47,20 @@ func RoomCreate() {
 }
 
 // 查询房间
-func RoomList() []Room {
-	return RoomArr
+type RoomRes struct {
+	RoomId     int
+	Background string
+}
+
+func RoomList() []RoomRes {
+	var res []RoomRes
+	for i := 0; i < len(RoomArr); i++ {
+		res = append(res, RoomRes{
+			RoomId:     RoomArr[i].RoomId,
+			Background: RoomArr[i].Background.Background,
+		})
+	}
+	return res
 }
 
 // Story

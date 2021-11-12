@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	con "github.com/trpg/controller"
@@ -45,7 +46,8 @@ func methodMiddleware(next http.Handler) http.Handler {
 func authMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token := getToken(r)
-		check := con.AuthCheck(token, "kp", 0)
+		roomId := getRoomId(r)
+		check := con.AuthCheck(token, "kp", roomId)
 		if check {
 			next.ServeHTTP(w, r)
 		} else {
@@ -55,6 +57,7 @@ func authMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+// 新增kp, pc, 观察者身份检测
 func middleware(next func(http.ResponseWriter, *http.Request)) http.Handler {
 	return logMiddleware(methodMiddleware(http.HandlerFunc(next)))
 }
@@ -75,4 +78,20 @@ func LogInit() {
 	}
 	log.SetOutput(logFile)
 	log.SetFlags(log.LstdFlags | log.Lshortfile | log.LUTC)
+}
+
+func getRoomId(r *http.Request) int {
+	switch r.Method {
+	case "GET":
+		query := get(r)
+		roomId, _ := strconv.Atoi(query["roomId"])
+		return roomId
+	case "POST":
+		var query struct{ RoomId int }
+		postJson(r, &query)
+		roomId := query.RoomId
+		return roomId
+	default:
+		return -1
+	}
 }

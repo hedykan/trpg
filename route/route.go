@@ -51,6 +51,8 @@ func RouteInit() {
 	// 属性操作
 	http.Handle("/attr/list", mid(attrList))
 	http.Handle("/attr/node_get", mid(attrNodeGet))
+
+	http.Handle("/room/list", mid(roomList))
 }
 
 func res(data interface{}) map[string]interface{} {

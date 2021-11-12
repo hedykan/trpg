@@ -21,7 +21,7 @@ func AuthInit() {
 		Token: "13570890160",
 		OwnRunning: []AuthRunningNode{
 			{
-				RoomId: 0,
+				RoomId: 1,
 				Role:   "kp",
 			},
 		},
