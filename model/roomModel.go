@@ -11,6 +11,7 @@ type Room struct {
 	StoryNodeList []StoryNode
 	Background    StoryBackground
 	Status        RunStatus
+	AttrNodeList  []AttrNode
 }
 
 func RoomArrLoad() []Room {
@@ -61,6 +62,8 @@ func RoomLoad(roomId int) Room {
 	res.Status = StatusLoad(roomStatusAddr)
 	roomBackgroundAddr := roomAddr + "/story_background.json"
 	res.Background = StoryBackgroundLoad(roomBackgroundAddr)
+	roomAttrAddr := roomAddr + "/attr.json"
+	res.AttrNodeList = AttrLoad(roomAttrAddr)
 	return res
 }
 
@@ -73,4 +76,6 @@ func RoomSave(room Room) {
 	StoryBackgroundSave(room.Background, backgroundAddr)
 	statusAddr := roomAddr + "/status.json"
 	StatusSave(room.Status, statusAddr)
+	attrAddr := roomAddr + "/attr.json"
+	AttrSave(attrAddr, room.AttrNodeList)
 }

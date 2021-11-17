@@ -46,8 +46,8 @@ func RunStatusList(status RunStatus) RunStatus {
 }
 
 // 跑团当前节点查询
-func RunNowNodeGet(storyNodeMap map[int]*StoryNode, status *RunStatus) StoryNode {
-	return StoryNodeGet(storyNodeMap, status.NowStoryNode)
+func RunNowNodeGet(table *StoryTable, status *RunStatus) StoryNode {
+	return StoryNodeGet(table, status.NowStoryNode)
 }
 
 type VoteRes struct {
@@ -58,14 +58,14 @@ type VoteRes struct {
 	}
 }
 
-func RunNowVoteGet(storyNodeMap map[int]*StoryNode, status *RunStatus) VoteRes {
+func RunNowVoteGet(table *StoryTable, status *RunStatus) VoteRes {
 	data := status.RecordVote
 	var res VoteRes
 	// 查找节点
 	// 回复加工后的RunVote
 	for i := 0; i < len(data); i++ {
 		if data[i].NodeId == status.NowStoryNode {
-			storyNode := RunNowNodeGet(storyNodeMap, status)
+			storyNode := RunNowNodeGet(table, status)
 			find := data[i]
 			res.NodeId = status.NowStoryNode
 			res.VoteStatus = make([]struct {

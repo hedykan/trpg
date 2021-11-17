@@ -25,7 +25,7 @@ func main() {
 func mainInit() {
 	// 跑团服务初始化
 	con.RoomInit()
-	con.AttrInit()
+	// con.AttrInit()
 	con.AuthInit()
 	// 路由服务初始化
 	route.RouteInit()

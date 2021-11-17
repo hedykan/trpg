@@ -6,11 +6,13 @@ import (
 
 // room 记录故事节点和状态节点
 type Room struct {
-	RoomId        int
-	StoryNodeList []StoryNode
-	StoryNodeMap  map[int]*StoryNode
-	Background    StoryBackground
-	Status        RunStatus
+	RoomId int
+	// StoryNodeList []StoryNode
+	// StoryNodeMap  map[int]*StoryNode
+	Story      StoryTable
+	Background StoryBackground
+	Status     RunStatus
+	Attribute  AttrTable
 }
 
 var RoomArr []Room
@@ -31,16 +33,18 @@ func RoomInit() {
 func RoomCreate() {
 	roomId := roomIdCreate(RoomArr) + 1
 	RoomArr = append(RoomArr, Room{
-		RoomId:        roomId,
-		StoryNodeList: StoryCreate(),
-		StoryNodeMap:  map[int]*StoryNode{},
-		Background:    StoryBackground{Background: ""},
+		RoomId: roomId,
+		// StoryNodeList: StoryCreate(),
+		// StoryNodeMap:  map[int]*StoryNode{},
+		Story:      StoryTable{StoryList: StoryCreate(), StoryMap: map[int]*StoryNode{}},
+		Background: StoryBackground{Background: ""},
+		Attribute:  *AttrCreate(),
 	})
 
 	RoomIdArr = append(RoomIdArr, roomId)
 	updateRoomMap(RoomArr, RoomMap)
-	updateNodeMap(RoomMap[roomId].StoryNodeList, RoomMap[roomId].StoryNodeMap)
-	RoomMap[roomId].Status = *RunStatusCreate(RoomMap[roomId].StoryNodeMap)
+	updateNodeMap(&RoomMap[roomId].Story)
+	RoomMap[roomId].Status = *RunStatusCreate(RoomMap[roomId].Story.StoryMap)
 
 	go model.RoomArrSave(RoomArrTransferModel(RoomArr))
 	go model.RoomIdArrSave(RoomIdArr)
@@ -66,12 +70,12 @@ func RoomList() []RoomRes {
 // Story
 // 查询故事
 func RoomStoryList(roomId int) []StoryNode {
-	return RoomMap[roomId].StoryNodeList
+	return RoomMap[roomId].Story.StoryList
 }
 
 // 查询故事节点
 func RoomStoryNodeGet(roomId int, nodeId int) StoryNode {
-	return StoryNodeGet(RoomMap[roomId].StoryNodeMap, nodeId)
+	return StoryNodeGet(&RoomMap[roomId].Story, nodeId)
 }
 
 // 查询故事背景
@@ -82,8 +86,7 @@ func RoomRunBackgroundGet(roomId int) StoryBackground {
 // 新增房间故事节点
 func RoomStoryNodeAdd(roomId int, val string, input []StorySeleter, output []StorySeleter) bool {
 	ok := StoryNodeAdd(
-		RoomMap[roomId].StoryNodeList,
-		RoomMap[roomId].StoryNodeMap,
+		&RoomMap[roomId].Story,
 		val,
 		input,
 		output,
@@ -95,7 +98,7 @@ func RoomStoryNodeAdd(roomId int, val string, input []StorySeleter, output []Sto
 // 编辑房间故事节点
 func RoomStoryNodeEdit(roomId int, nodeId int, val string, input []StorySeleter, output []StorySeleter) bool {
 	ok := StoryNodeEdit(
-		RoomMap[roomId].StoryNodeMap,
+		&RoomMap[roomId].Story,
 		nodeId,
 		val,
 		input,
@@ -108,8 +111,7 @@ func RoomStoryNodeEdit(roomId int, nodeId int, val string, input []StorySeleter,
 // 删除房间故事节点
 func RoomStoryNodeDelete(roomId int, nodeId int) {
 	StoryNodeDelete(
-		RoomMap[roomId].StoryNodeMap,
-		RoomMap[roomId].StoryNodeList,
+		&RoomMap[roomId].Story,
 		nodeId,
 	)
 	go model.RoomSave(RoomTransferModel(*RoomMap[roomId]))
@@ -118,7 +120,7 @@ func RoomStoryNodeDelete(roomId int, nodeId int) {
 // 房间故事节点连接
 func RoomStorySelecterAdd(roomId int, nodeId int, linkId int, val string) bool {
 	ok := StorySelecterAdd(
-		RoomMap[roomId].StoryNodeMap,
+		&RoomMap[roomId].Story,
 		nodeId,
 		linkId,
 		val,
@@ -129,7 +131,7 @@ func RoomStorySelecterAdd(roomId int, nodeId int, linkId int, val string) bool {
 
 func RoomStorySelecterDelete(roomId int, nodeId int, linkId int) bool {
 	ok := StorySelecterDelete(
-		RoomMap[roomId].StoryNodeMap,
+		&RoomMap[roomId].Story,
 		nodeId,
 		linkId,
 	)
@@ -147,7 +149,7 @@ func RoomRunStatusList(roomId int) RunStatus {
 // 当前节点获取
 func RoomRunNowNodeGet(roomId int) StoryNode {
 	return RunNowNodeGet(
-		RoomMap[roomId].StoryNodeMap,
+		&RoomMap[roomId].Story,
 		&RoomMap[roomId].Status,
 	)
 }
@@ -155,7 +157,7 @@ func RoomRunNowNodeGet(roomId int) StoryNode {
 // 当前投票获取
 func RoomRunNowVoteGet(roomId int) VoteRes {
 	return RunNowVoteGet(
-		RoomMap[roomId].StoryNodeMap,
+		&RoomMap[roomId].Story,
 		&RoomMap[roomId].Status,
 	)
 }
@@ -163,7 +165,7 @@ func RoomRunNowVoteGet(roomId int) VoteRes {
 // 获取已记录列表
 func RoomRunNowRecordList(roomId int) []StoryNode {
 	return RunNowRecordList(
-		RoomMap[roomId].StoryNodeMap,
+		RoomMap[roomId].Story.StoryMap,
 		&RoomMap[roomId].Status,
 	)
 }
@@ -171,7 +173,7 @@ func RoomRunNowRecordList(roomId int) []StoryNode {
 // 新投票添加
 func RoomRunVoteAdd(roomId int, selecterId int, token string) bool {
 	ok := RunVoteAdd(
-		RoomMap[roomId].StoryNodeMap,
+		RoomMap[roomId].Story.StoryMap,
 		&RoomMap[roomId].Status,
 		selecterId,
 		token,
@@ -183,7 +185,7 @@ func RoomRunVoteAdd(roomId int, selecterId int, token string) bool {
 // 跑团步骤执行
 func RoomRunStep(roomId int, nodeId int) {
 	RunStep(
-		RoomMap[roomId].StoryNodeMap,
+		RoomMap[roomId].Story.StoryMap,
 		&RoomMap[roomId].Status,
 		nodeId,
 	)
@@ -193,11 +195,36 @@ func RoomRunStep(roomId int, nodeId int) {
 // 跑团步骤回退
 func RoomRunReturn(roomId int, nodeId int) {
 	RunReturn(
-		RoomMap[roomId].StoryNodeMap,
+		RoomMap[roomId].Story.StoryMap,
 		&RoomMap[roomId].Status,
 		nodeId,
 	)
 	go model.RoomSave(RoomTransferModel(*RoomMap[roomId]))
+}
+
+// 获取属性列表
+func RoomAttrList(roomId int) []AttrNode {
+	return AttrList(&RoomMap[roomId].Attribute)
+}
+
+// 获取属性节点
+func RoomAttrNodeGet(roomId int, attrId int) AttrNode {
+	return AttrNodeGet(&RoomMap[roomId].Attribute, attrId)
+}
+
+// 新增属性节点
+func RoomAttrNodeAdd(roomId int, val string, num int) {
+	AttrNodeAdd(&RoomMap[roomId].Attribute, val, num)
+}
+
+// 修改属性节点
+func RoomAttrNodeEdit(roomId int, attrId int, val string, num int) bool {
+	return AttrNodeEdit(&RoomMap[roomId].Attribute, attrId, val, num)
+}
+
+// 删除属性节点
+func RoomAttrNodeDelete(roomId int, attrId int) bool {
+	return AttrNodeDelete(&RoomMap[roomId].Attribute, attrId)
 }
 
 func roomIdCreate(roomArr []Room) int {

@@ -200,38 +200,60 @@ func runReturn(w http.ResponseWriter, r *http.Request) {
 }
 
 func attrList(w http.ResponseWriter, r *http.Request) {
-	resInput(w, r, con.AttrList())
+	query := get(r)
+	roomId, err := strconv.Atoi(query["roomId"])
+	if err != nil {
+		panic(err)
+	}
+	resInput(w, r, con.RoomAttrList(roomId))
 }
 
 func attrNodeGet(w http.ResponseWriter, r *http.Request) {
 	query := get(r)
-	id, err := strconv.Atoi(query["id"])
+	attrId, err := strconv.Atoi(query["attrId"])
 	if err != nil {
 		panic(err)
 	}
-	resInput(w, r, con.AttrNodeGet(id))
+	roomId, err := strconv.Atoi(query["roomId"])
+	if err != nil {
+		panic(err)
+	}
+	resInput(w, r, con.RoomAttrNodeGet(roomId, attrId))
 }
 
 func attrNodeAdd(w http.ResponseWriter, r *http.Request) {
-	var query con.AttrNode
+	var query struct {
+		roomId int
+		val    string
+		num    int
+	}
 	postJson(r, &query)
-	con.AttrNodeAdd(query.Val, query.Num)
+	con.RoomAttrNodeAdd(query.roomId, query.val, query.num)
 	resInput(w, r, nil)
 }
 
 func attrNodeEdit(w http.ResponseWriter, r *http.Request) {
-	var query con.AttrNode
+	var query struct {
+		roomId int
+		attrId int
+		val    string
+		num    int
+	}
 	postJson(r, &query)
-	resInput(w, r, con.AttrNodeEdit(query.Id, query.Val, query.Num))
+	resInput(w, r, con.RoomAttrNodeEdit(query.roomId, query.attrId, query.val, query.num))
 }
 
 func attrNodeDelete(w http.ResponseWriter, r *http.Request) {
 	query := get(r)
-	id, err := strconv.Atoi(query["id"])
+	attrId, err := strconv.Atoi(query["attrId"])
 	if err != nil {
 		panic(err)
 	}
-	resInput(w, r, con.AttrNodeDelete(id))
+	roomId, err := strconv.Atoi(query["roomId"])
+	if err != nil {
+		panic(err)
+	}
+	resInput(w, r, con.RoomAttrNodeDelete(roomId, attrId))
 }
 
 func roomList(w http.ResponseWriter, r *http.Request) {
@@ -240,7 +262,7 @@ func roomList(w http.ResponseWriter, r *http.Request) {
 
 func authCheck(w http.ResponseWriter, r *http.Request) {
 	token := getToken(r)
-	resInput(w, r, con.AuthCheck(token, "kp", 0))
+	resInput(w, r, con.AuthCheck(token, "kp", 1))
 }
 
 func authStatus(w http.ResponseWriter, r *http.Request) {

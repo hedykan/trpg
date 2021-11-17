@@ -134,13 +134,37 @@ func VoteStatusArrTransferModel(voteStatusArr []RunVoteStatus) []model.RunVoteSt
 	return res
 }
 
+// attr
+func AttrArrTransfer(attrArr []model.AttrNode) []AttrNode {
+	var res []AttrNode
+	for i := 0; i < len(attrArr); i++ {
+		res = append(res, AttrNode{
+			Id:  attrArr[i].Id,
+			Val: attrArr[i].Val,
+			Num: attrArr[i].Num,
+		})
+	}
+	return res
+}
+
+func AttrArrTransferModel(attrArr []AttrNode) []model.AttrNode {
+	var res []model.AttrNode
+	for i := 0; i < len(attrArr); i++ {
+		res = append(res, model.AttrNode{
+			Id:  attrArr[i].Id,
+			Val: attrArr[i].Val,
+			Num: attrArr[i].Num,
+		})
+	}
+	return res
+}
+
 // Room
 // 接收请求回来的数据
 func RoomArrTransfer(roomArr []model.Room) []Room {
 	var res []Room
 	for i := 0; i < len(roomArr); i++ {
 		res = append(res, RoomTransfer(roomArr[i]))
-		updateNodeMap(res[i].StoryNodeList, res[i].StoryNodeMap)
 	}
 	return res
 }
@@ -156,13 +180,14 @@ func RoomArrTransferModel(roomArr []Room) []model.Room {
 func RoomTransfer(room model.Room) Room {
 	var res Room
 	res = Room{
-		RoomId:        room.RoomId,
-		StoryNodeList: StoryNodeArrTransfer(room.StoryNodeList),
-		StoryNodeMap:  make(map[int]*StoryNode),
-		Background:    StoryBackgroundTransfer(room.Background),
-		Status:        StatusTransfer(room.Status),
+		RoomId:     room.RoomId,
+		Story:      StoryTable{StoryList: StoryNodeArrTransfer(room.StoryNodeList), StoryMap: make(map[int]*StoryNode)},
+		Background: StoryBackgroundTransfer(room.Background),
+		Status:     StatusTransfer(room.Status),
+		Attribute:  AttrTable{AttrList: AttrArrTransfer(room.AttrNodeList), AttrMap: make(map[int]*AttrNode)},
 	}
-	updateNodeMap(res.StoryNodeList, res.StoryNodeMap)
+	updateNodeMap(&res.Story)
+	updateAttrNodeMap(&res.Attribute)
 	return res
 }
 
@@ -170,9 +195,10 @@ func RoomTransferModel(room Room) model.Room {
 	var res model.Room
 	res = model.Room{
 		RoomId:        room.RoomId,
-		StoryNodeList: StoryNodeArrTransferModel(room.StoryNodeList),
+		StoryNodeList: StoryNodeArrTransferModel(room.Story.StoryList),
 		Background:    model.StoryBackground(room.Background),
 		Status:        StatusTransferModel(room.Status),
+		AttrNodeList:  AttrArrTransferModel(room.Attribute.AttrList),
 	}
 	return res
 }

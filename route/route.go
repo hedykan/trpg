@@ -2,6 +2,7 @@ package route
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -114,6 +115,7 @@ func postJson(r *http.Request, obj interface{}) {
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println(string(body))
 	err = json.Unmarshal(body, obj)
 	if err != nil {
 		panic(err)
