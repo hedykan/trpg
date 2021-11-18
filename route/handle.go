@@ -223,24 +223,24 @@ func attrNodeGet(w http.ResponseWriter, r *http.Request) {
 
 func attrNodeAdd(w http.ResponseWriter, r *http.Request) {
 	var query struct {
-		roomId int
-		val    string
-		num    int
+		RoomId int
+		Val    string
+		Num    int
 	}
 	postJson(r, &query)
-	con.RoomAttrNodeAdd(query.roomId, query.val, query.num)
+	con.RoomAttrNodeAdd(query.RoomId, query.Val, query.Num)
 	resInput(w, r, nil)
 }
 
 func attrNodeEdit(w http.ResponseWriter, r *http.Request) {
 	var query struct {
-		roomId int
-		attrId int
-		val    string
-		num    int
+		RoomId int
+		AttrId int
+		Val    string
+		Num    int
 	}
 	postJson(r, &query)
-	resInput(w, r, con.RoomAttrNodeEdit(query.roomId, query.attrId, query.val, query.num))
+	resInput(w, r, con.RoomAttrNodeEdit(query.RoomId, query.AttrId, query.Val, query.Num))
 }
 
 func attrNodeDelete(w http.ResponseWriter, r *http.Request) {

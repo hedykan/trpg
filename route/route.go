@@ -1,8 +1,8 @@
 package route
 
 import (
+	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -52,6 +52,7 @@ func RouteInit() {
 	// 属性操作
 	http.Handle("/attr/list", mid(attrList))
 	http.Handle("/attr/node_get", mid(attrNodeGet))
+	// http.Handle("/attr/node_add", mid(attrNodeAdd))
 
 	http.Handle("/room/list", mid(roomList))
 }
@@ -115,8 +116,10 @@ func postJson(r *http.Request, obj interface{}) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(string(body))
+	// 重新写入
+	r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 	err = json.Unmarshal(body, obj)
+	// err := json.NewDecoder(r.Body).Decode(obj) // 会导致r.Body读取完后无法重新写入
 	if err != nil {
 		panic(err)
 	}

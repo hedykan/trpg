@@ -86,7 +86,7 @@ func getRoomId(r *http.Request) int {
 		query := get(r)
 		roomId, _ := strconv.Atoi(query["roomId"])
 		return roomId
-	case "POST":
+	case "POST": // 在这里取过一次RoomId会导致第二次取不到
 		var query struct{ RoomId int }
 		postJson(r, &query)
 		roomId := query.RoomId

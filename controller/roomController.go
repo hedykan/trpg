@@ -215,16 +215,21 @@ func RoomAttrNodeGet(roomId int, attrId int) AttrNode {
 // 新增属性节点
 func RoomAttrNodeAdd(roomId int, val string, num int) {
 	AttrNodeAdd(&RoomMap[roomId].Attribute, val, num)
+	go model.RoomSave(RoomTransferModel(*RoomMap[roomId]))
 }
 
 // 修改属性节点
 func RoomAttrNodeEdit(roomId int, attrId int, val string, num int) bool {
-	return AttrNodeEdit(&RoomMap[roomId].Attribute, attrId, val, num)
+	ok := AttrNodeEdit(&RoomMap[roomId].Attribute, attrId, val, num)
+	go model.RoomSave(RoomTransferModel(*RoomMap[roomId]))
+	return ok
 }
 
 // 删除属性节点
 func RoomAttrNodeDelete(roomId int, attrId int) bool {
-	return AttrNodeDelete(&RoomMap[roomId].Attribute, attrId)
+	ok := AttrNodeDelete(&RoomMap[roomId].Attribute, attrId)
+	go model.RoomSave(RoomTransferModel(*RoomMap[roomId]))
+	return ok
 }
 
 func roomIdCreate(roomArr []Room) int {
