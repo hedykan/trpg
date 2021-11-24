@@ -186,8 +186,8 @@ func RoomTransfer(room model.Room) Room {
 		Status:     StatusTransfer(room.Status),
 		Attribute:  AttrTable{AttrList: AttrArrTransfer(room.AttrNodeList), AttrMap: make(map[int]*AttrNode)},
 	}
-	updateNodeMap(&res.Story)
-	updateAttrNodeMap(&res.Attribute)
+	res.Story.updateMap()
+	res.Attribute.updateMap()
 	return res
 }
 

@@ -16,6 +16,8 @@ type StoryTable struct {
 	StoryMap  map[int]*StoryNode
 }
 
+type StoryListType []StoryNode
+
 // 输入输出结构体
 // 可以添加ext扩展，使run控制器根据条件显示故事选项
 type StorySeleter struct {
@@ -98,7 +100,8 @@ func StoryNodeAdd(table *StoryTable, val string, input []StorySeleter, output []
 	node := StoryNodeCreate(table.StoryList, val)
 	// append后StoryNodeMap的地址和append的地址不同, 需要更新StoryNodeMap
 	table.StoryList = append(table.StoryList, node)
-	updateNodeMap(table)
+	// updateNodeMap(table)
+	table.updateMap()
 	// 自己的输出组
 	for i := 0; i < len(output); i++ {
 		StorySelecterAdd(table, node.Id, output[i].Id, output[i].Val)
@@ -274,8 +277,14 @@ func deleteNodeSlice(arr []StoryNode, index int) []StoryNode {
 	return arr
 }
 
-func updateNodeMap(table *StoryTable) {
-	for i := 0; i < len(table.StoryList); i++ {
-		table.StoryMap[table.StoryList[i].Id] = &table.StoryList[i]
+// func updateNodeMap(table *StoryTable) {
+// 	for i := 0; i < len(table.StoryList); i++ {
+// 		table.StoryMap[table.StoryList[i].Id] = &table.StoryList[i]
+// 	}
+// }
+
+func (storyTable *StoryTable) updateMap() {
+	for i := 0; i < len(storyTable.StoryList); i++ {
+		storyTable.StoryMap[storyTable.StoryList[i].Id] = &storyTable.StoryList[i]
 	}
 }

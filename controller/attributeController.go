@@ -15,6 +15,8 @@ type AttrTable struct {
 	AttrMap  map[int]*AttrNode
 }
 
+type AttrListType []AttrNode
+
 var AttrNodeArr []AttrNode
 var AttrNodeMap map[int]*AttrNode
 
@@ -49,7 +51,8 @@ func AttrNodeAdd(table *AttrTable, val string, num int) {
 		}
 	}
 	node.Id += 1
-	updateAttrNodeMap(table)
+	// updateAttrNodeMap(table)
+	table.updateMap()
 	table.AttrList = append(table.AttrList, node)
 }
 
@@ -103,7 +106,13 @@ func searchAttrId(arr []AttrNode, id int) int {
 	return -1
 }
 
-func updateAttrNodeMap(attrTable *AttrTable) {
+// func updateAttrNodeMap(attrTable *AttrTable) {
+// 	for i := 0; i < len(attrTable.AttrList); i++ {
+// 		attrTable.AttrMap[attrTable.AttrList[i].Id] = &attrTable.AttrList[i]
+// 	}
+// }
+
+func (attrTable *AttrTable) updateMap() {
 	for i := 0; i < len(attrTable.AttrList); i++ {
 		attrTable.AttrMap[attrTable.AttrList[i].Id] = &attrTable.AttrList[i]
 	}

@@ -6,25 +6,34 @@ import (
 
 // room 记录故事节点和状态节点
 type Room struct {
-	RoomId int
-	// StoryNodeList []StoryNode
-	// StoryNodeMap  map[int]*StoryNode
+	RoomId     int
 	Story      StoryTable
 	Background StoryBackground
 	Status     RunStatus
 	Attribute  AttrTable
 }
 
+type RoomTable struct {
+	RoomList   []Room
+	RoomMap    map[int]*Room
+	RoomIdList []int
+}
+
 var RoomArr []Room
 var RoomMap map[int]*Room
 var RoomIdArr []int
 
+// var RoomRec RoomTable
 // 根据持久化数据初始化房间
 func RoomInit() {
 	RoomIdArr = model.RoomIdArrLoad()
 	RoomArr = RoomArrTransfer(model.RoomArrLoad())
 	RoomMap = make(map[int]*Room)
 	updateRoomMap(RoomArr, RoomMap)
+	// RoomRec.RoomIdList = model.RoomIdArrLoad()
+	// RoomRec.RoomList = RoomArrTransfer(model.RoomArrLoad())
+	// RoomRec.RoomMap = make(map[int]*Room)
+	// RoomRec.updateMap()
 }
 
 // load/save函数
@@ -33,9 +42,7 @@ func RoomInit() {
 func RoomCreate() {
 	roomId := roomIdCreate(RoomArr) + 1
 	RoomArr = append(RoomArr, Room{
-		RoomId: roomId,
-		// StoryNodeList: StoryCreate(),
-		// StoryNodeMap:  map[int]*StoryNode{},
+		RoomId:     roomId,
 		Story:      StoryTable{StoryList: StoryCreate(), StoryMap: map[int]*StoryNode{}},
 		Background: StoryBackground{Background: ""},
 		Attribute:  *AttrCreate(),
@@ -43,7 +50,7 @@ func RoomCreate() {
 
 	RoomIdArr = append(RoomIdArr, roomId)
 	updateRoomMap(RoomArr, RoomMap)
-	updateNodeMap(&RoomMap[roomId].Story)
+	RoomMap[roomId].Story.updateMap()
 	RoomMap[roomId].Status = *RunStatusCreate(RoomMap[roomId].Story.StoryMap)
 
 	go model.RoomArrSave(RoomArrTransferModel(RoomArr))
@@ -246,4 +253,8 @@ func updateRoomMap(roomArr []Room, roomMap map[int]*Room) {
 	for i := 0; i < len(roomArr); i++ {
 		roomMap[roomArr[i].RoomId] = &roomArr[i]
 	}
+}
+
+func (table *RoomTable) updateMap() {
+	updateRoomMap(table.RoomList, table.RoomMap)
 }
