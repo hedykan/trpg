@@ -77,5 +77,5 @@ func RoomSave(room Room) {
 	statusAddr := roomAddr + "/status.json"
 	StatusSave(room.Status, statusAddr)
 	attrAddr := roomAddr + "/attr.json"
-	AttrSave(attrAddr, room.AttrNodeList)
+	AttrSave(room.AttrNodeList, attrAddr)
 }

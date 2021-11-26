@@ -1,15 +1,17 @@
 package controller
 
+import (
+	"fmt"
+
+	"github.com/trpg/model"
+)
+
 // 角色
 type RoleNode struct {
 	Id          int
 	Name        string
 	AttrList    []AttrNode
 	RoleAttrMap map[int]*AttrNode
-}
-
-// 角色拥有状态节点
-type RoleStatusNode struct {
 }
 
 type RoleTable struct {
@@ -19,25 +21,39 @@ type RoleTable struct {
 
 type RoleListType []RoleNode
 
-func RoleCreate(name string, list []AttrNode) RoleNode {
-	var node RoleNode
-	node.AttrList = list
-	node.updateMap()
-	return node
+var RoleTestTable RoleTable
+
+func RoleTest() {
+	RoleTestTable.RoleList = RoleArrTransfer(model.RoleLoad("./file/room/1/" + "role.json"))
+	RoleTestTable.RoleMap = make(map[int]*RoleNode)
+	RoleTestTable.updateMap()
+	// RoleNodeAdd(&RoleTestTable, "test1", RoomMap[1].Attribute.AttrList)
+	fmt.Println(RoleTestTable)
+	model.RoleSave(RoleArrTransferModel(RoleTestTable.RoleList), "./file/room/1/"+"role.json")
 }
 
-func RoleNodeGet(table RoleTable, RoleId int) RoleNode {
+func RoleCreate(name string, list []AttrNode) *RoleNode {
+	var node RoleNode
+	node.AttrList = list
+	node.RoleAttrMap = make(map[int]*AttrNode)
+	node.updateMap()
+	return &node
+}
+
+func RoleNodeGet(table *RoleTable, RoleId int) RoleNode {
 	return *table.RoleMap[RoleId]
 }
 
-func RoleNodeAdd(table RoleTable, name string, list []AttrNode) {
+func RoleNodeAdd(table *RoleTable, name string, list []AttrNode) {
 	node := RoleCreate(name, list)
 	node.Id = RoleListType(table.RoleList).getMaxId() + 1
-	table.RoleList = append(table.RoleList, node)
+	fmt.Println(node.Id)
+	table.RoleList = append(table.RoleList, *node)
 	table.updateMap()
 }
 
-func RoleAttrOperate(role RoleNode, attrId int, operate string, num int) {
+// 角色属性操作
+func RoleAttrOperate(role *RoleNode, attrId int, operate string, num int) {
 	switch operate {
 	case "add":
 		role.RoleAttrMap[attrId].Num += num

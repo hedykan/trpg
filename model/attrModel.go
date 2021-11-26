@@ -25,7 +25,7 @@ func AttrLoad(addr string) []AttrNode {
 	return table
 }
 
-func AttrSave(addr string, attrNodeList []AttrNode) {
+func AttrSave(attrNodeList []AttrNode, addr string) {
 	strArr := strings.Split(addr, "/")
 	dir := strings.Join(strArr[:len(strArr)-1], "/")
 	dirCreate(dir)

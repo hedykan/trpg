@@ -202,3 +202,30 @@ func RoomTransferModel(room Room) model.Room {
 	}
 	return res
 }
+
+// role
+func RoleArrTransfer(roleArr []model.RoleNode) []RoleNode {
+	var res []RoleNode
+	for i := 0; i < len(roleArr); i++ {
+		res = append(res, RoleNode{
+			Id:          roleArr[i].Id,
+			Name:        roleArr[i].Name,
+			AttrList:    AttrArrTransfer(roleArr[i].AttrList),
+			RoleAttrMap: make(map[int]*AttrNode),
+		})
+		res[i].updateMap()
+	}
+	return res
+}
+
+func RoleArrTransferModel(roleArr []RoleNode) []model.RoleNode {
+	var res []model.RoleNode
+	for i := 0; i < len(roleArr); i++ {
+		res = append(res, model.RoleNode{
+			Id:       roleArr[i].Id,
+			Name:     roleArr[i].Name,
+			AttrList: AttrArrTransferModel(roleArr[i].AttrList),
+		})
+	}
+	return res
+}

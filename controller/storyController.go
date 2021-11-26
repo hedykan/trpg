@@ -1,9 +1,5 @@
 package controller
 
-import (
-	"fmt"
-)
-
 /*
 	底层思想是操作一个故事表，根据输入输出节点决定故事走向
 */
@@ -40,11 +36,6 @@ type StoryBackground struct {
 // var StoryNodeMap map[int]*StoryNode
 // var StoryNodeArr []StoryNode
 // var StoryBackgroundNode StoryBackground
-
-func Test() {
-	// RoomCreate()
-	fmt.Println("test")
-}
 
 // 改为回storytable
 func StoryCreate() []StoryNode {

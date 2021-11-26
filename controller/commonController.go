@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"os"
 	"strings"
 )
@@ -23,4 +24,9 @@ func DirCheck(dir string) {
 	if err != nil {
 		os.MkdirAll(dir, 0755)
 	}
+}
+
+func Test() {
+	RoleTest()
+	fmt.Println("test")
 }
