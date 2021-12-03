@@ -27,6 +27,7 @@ func DirCheck(dir string) {
 }
 
 func Test() {
-	RoleTest()
+	// RoomCreate()
+	RoomDelete(3)
 	fmt.Println("test")
 }

@@ -14,7 +14,6 @@ func RouteInit() {
 	// kp
 	mid := checkMiddleware
 	// 故事
-	http.Handle("/", mid(index))
 	// http.Handle("/story/init", mid(storyInit))
 	// http.Handle("/story/load", mid(storyLoad))
 	http.Handle("/story/list", mid(storyList))
@@ -37,6 +36,7 @@ func RouteInit() {
 
 	// pc
 	mid = middleware
+	http.Handle("/", mid(index))
 	// 身份确认
 	http.Handle("/auth/check", mid(authCheck))
 	http.Handle("/auth/status", mid(authStatus))

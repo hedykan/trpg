@@ -185,9 +185,11 @@ func RoomTransfer(room model.Room) Room {
 		Background: StoryBackgroundTransfer(room.Background),
 		Status:     StatusTransfer(room.Status),
 		Attribute:  AttrTable{AttrList: AttrArrTransfer(room.AttrNodeList), AttrMap: make(map[int]*AttrNode)},
+		Role:       RoleTable{RoleList: RoleArrTransfer(room.RoleNodeList), RoleMap: make(map[int]*RoleNode)},
 	}
 	res.Story.updateMap()
 	res.Attribute.updateMap()
+	res.Role.updateMap()
 	return res
 }
 
@@ -199,6 +201,7 @@ func RoomTransferModel(room Room) model.Room {
 		Background:    model.StoryBackground(room.Background),
 		Status:        StatusTransferModel(room.Status),
 		AttrNodeList:  AttrArrTransferModel(room.Attribute.AttrList),
+		RoleNodeList:  RoleArrTransferModel(room.Role.RoleList),
 	}
 	return res
 }

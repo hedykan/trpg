@@ -26,8 +26,9 @@ func AttrNodeCreate(val string, num int) AttrNode {
 	return node
 }
 
-func AttrCreate() *AttrTable {
+func AttrTableCreate() *AttrTable {
 	var attrTable AttrTable
+	attrTable.AttrList = make([]AttrNode, 0)
 	attrTable.AttrMap = make(map[int]*AttrNode)
 	return &attrTable
 }

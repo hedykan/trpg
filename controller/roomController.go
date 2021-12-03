@@ -11,6 +11,7 @@ type Room struct {
 	Background StoryBackground
 	Status     RunStatus
 	Attribute  AttrTable
+	Role       RoleTable
 }
 
 type RoomTable struct {
@@ -45,7 +46,8 @@ func RoomCreate() {
 		RoomId:     roomId,
 		Story:      StoryTable{StoryList: StoryCreate(), StoryMap: map[int]*StoryNode{}},
 		Background: StoryBackground{Background: ""},
-		Attribute:  *AttrCreate(),
+		Attribute:  *AttrTableCreate(),
+		Role:       *RoleTableCreate(),
 	})
 
 	RoomIdArr = append(RoomIdArr, roomId)
@@ -72,6 +74,16 @@ func RoomList() []RoomRes {
 		})
 	}
 	return res
+}
+
+func RoomDelete(roomId int) {
+	delete(RoomMap, roomId)
+	for i := 0; i < len(RoomArr); i++ {
+		if RoomArr[i].RoomId == roomId {
+			RoomArr = append(RoomArr[:i], RoomArr[i+1:]...)
+		}
+	}
+	// 删除文件
 }
 
 // Story

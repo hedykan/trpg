@@ -32,6 +32,13 @@ func RoleTest() {
 	model.RoleSave(RoleArrTransferModel(RoleTestTable.RoleList), "./file/room/1/"+"role.json")
 }
 
+func RoleTableCreate() *RoleTable {
+	var table RoleTable
+	table.RoleList = make([]RoleNode, 0)
+	table.updateMap()
+	return &table
+}
+
 func RoleCreate(name string, list []AttrNode) *RoleNode {
 	var node RoleNode
 	node.AttrList = list
@@ -40,10 +47,12 @@ func RoleCreate(name string, list []AttrNode) *RoleNode {
 	return &node
 }
 
+// 获取角色节点
 func RoleNodeGet(table *RoleTable, RoleId int) RoleNode {
 	return *table.RoleMap[RoleId]
 }
 
+// 新增角色节点
 func RoleNodeAdd(table *RoleTable, name string, list []AttrNode) {
 	node := RoleCreate(name, list)
 	node.Id = RoleListType(table.RoleList).getMaxId() + 1
