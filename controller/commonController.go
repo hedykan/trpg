@@ -28,6 +28,8 @@ func DirCheck(dir string) {
 
 func Test() {
 	// RoomCreate()
-	RoomDelete(3)
+	RoomDelete(2)
+	RoomDelete(4)
+	RoomDelete(5)
 	fmt.Println("test")
 }

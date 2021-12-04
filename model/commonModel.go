@@ -24,3 +24,7 @@ func fileSave(data interface{}, addr string) {
 	}
 	ioutil.WriteFile(addr, str, 0644)
 }
+
+func dirDelete(dir string) {
+	os.RemoveAll(dir)
+}

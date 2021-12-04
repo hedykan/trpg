@@ -84,3 +84,8 @@ func RoomSave(room Room) {
 	roleAddr := roomAddr + "/role.json"
 	RoleSave(room.RoleNodeList, roleAddr)
 }
+
+func RoomDelete(roomId int) {
+	roomAddr := "./file/room/" + strconv.Itoa(roomId)
+	dirDelete(roomAddr)
+}

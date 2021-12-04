@@ -82,8 +82,13 @@ func RoomDelete(roomId int) {
 		if RoomArr[i].RoomId == roomId {
 			RoomArr = append(RoomArr[:i], RoomArr[i+1:]...)
 		}
+		if RoomIdArr[i] == roomId {
+			RoomIdArr = append(RoomIdArr[:i], RoomIdArr[i+1:]...)
+		}
 	}
 	// 删除文件
+	model.RoomIdArrSave(RoomIdArr)
+	model.RoomDelete(roomId)
 }
 
 // Story
