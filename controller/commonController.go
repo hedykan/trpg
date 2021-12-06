@@ -27,9 +27,6 @@ func DirCheck(dir string) {
 }
 
 func Test() {
-	// RoomCreate()
-	RoomDelete(2)
-	RoomDelete(4)
-	RoomDelete(5)
+	RoleNodeAdd(&RoomMap[1].Role, "test", RoomMap[1].Attribute.AttrList)
 	fmt.Println("test")
 }

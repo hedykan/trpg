@@ -2,8 +2,6 @@ package controller
 
 import (
 	"fmt"
-
-	"github.com/trpg/model"
 )
 
 // 角色
@@ -21,17 +19,6 @@ type RoleTable struct {
 
 type RoleListType []RoleNode
 
-var RoleTestTable RoleTable
-
-func RoleTest() {
-	RoleTestTable.RoleList = RoleArrTransfer(model.RoleLoad("./file/room/1/" + "role.json"))
-	RoleTestTable.RoleMap = make(map[int]*RoleNode)
-	RoleTestTable.updateMap()
-	// RoleNodeAdd(&RoleTestTable, "test1", RoomMap[1].Attribute.AttrList)
-	fmt.Println(RoleTestTable)
-	model.RoleSave(RoleArrTransferModel(RoleTestTable.RoleList), "./file/room/1/"+"role.json")
-}
-
 func RoleTableCreate() *RoleTable {
 	var table RoleTable
 	table.RoleList = make([]RoleNode, 0)
@@ -39,13 +26,13 @@ func RoleTableCreate() *RoleTable {
 	return &table
 }
 
-func RoleCreate(name string, list []AttrNode) *RoleNode {
-	var node RoleNode
-	node.AttrList = list
-	node.RoleAttrMap = make(map[int]*AttrNode)
-	node.updateMap()
-	return &node
-}
+// func RoleCreate(name string, list []AttrNode) *RoleNode {
+// 	var node RoleNode
+// 	node.AttrList = list
+// 	node.RoleAttrMap = make(map[int]*AttrNode)
+// 	node.updateMap()
+// 	return &node
+// }
 
 // 获取角色节点
 func RoleNodeGet(table *RoleTable, RoleId int) RoleNode {
@@ -54,10 +41,15 @@ func RoleNodeGet(table *RoleTable, RoleId int) RoleNode {
 
 // 新增角色节点
 func RoleNodeAdd(table *RoleTable, name string, list []AttrNode) {
-	node := RoleCreate(name, list)
-	node.Id = RoleListType(table.RoleList).getMaxId() + 1
-	fmt.Println(node.Id)
+	node := &RoleNode{
+		Id:          RoleListType(table.RoleList).getMaxId() + 1,
+		Name:        name,
+		AttrList:    list,
+		RoleAttrMap: map[int]*AttrNode{},
+	}
+	node.updateMap()
 	table.RoleList = append(table.RoleList, *node)
+	fmt.Println(table.RoleList)
 	table.updateMap()
 }
 
@@ -89,7 +81,7 @@ func (roleList RoleListType) getMaxId() int {
 	max := 0
 	for i := 0; i < len(roleList); i++ {
 		if max < roleList[i].Id {
-			max = i
+			max = roleList[i].Id
 		}
 	}
 	return max

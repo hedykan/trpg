@@ -76,6 +76,7 @@ func RoomList() []RoomRes {
 	return res
 }
 
+// 删除房间
 func RoomDelete(roomId int) {
 	delete(RoomMap, roomId)
 	for i := 0; i < len(RoomArr); i++ {
