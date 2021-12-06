@@ -1,7 +1,9 @@
 package controller
 
 import (
-	"fmt"
+	"strconv"
+
+	"github.com/trpg/model"
 )
 
 // 角色
@@ -26,17 +28,14 @@ func RoleTableCreate() *RoleTable {
 	return &table
 }
 
-// func RoleCreate(name string, list []AttrNode) *RoleNode {
-// 	var node RoleNode
-// 	node.AttrList = list
-// 	node.RoleAttrMap = make(map[int]*AttrNode)
-// 	node.updateMap()
-// 	return &node
-// }
-
 // 获取角色节点
 func RoleNodeGet(table *RoleTable, RoleId int) RoleNode {
 	return *table.RoleMap[RoleId]
+}
+
+// 获取角色列表
+func RoleNodeList(table *RoleTable) []RoleNode {
+	return table.RoleList
 }
 
 // 新增角色节点
@@ -49,20 +48,29 @@ func RoleNodeAdd(table *RoleTable, name string, list []AttrNode) {
 	}
 	node.updateMap()
 	table.RoleList = append(table.RoleList, *node)
-	fmt.Println(table.RoleList)
 	table.updateMap()
 }
 
+// 删除角色节点
+func RoleNodeDelete(table *RoleTable, roleId int) {
+	table.deleteNode(roleId)
+}
+
 // 角色属性操作
-func RoleAttrOperate(role *RoleNode, attrId int, operate string, num int) {
+func RoleAttrOperate(table *RoleTable, roleId int, attrId int, operate string, num int) {
 	switch operate {
 	case "add":
-		role.RoleAttrMap[attrId].Num += num
+		table.RoleMap[roleId].RoleAttrMap[attrId].Num += num
 		break
 	case "sub":
-		role.RoleAttrMap[attrId].Num -= num
+		table.RoleMap[roleId].RoleAttrMap[attrId].Num -= num
 		break
 	}
+}
+
+func (table *RoleTable) save(roomId int) {
+	addr := "./file/room/" + strconv.Itoa(roomId) + "/role.json"
+	model.RoleSave(RoleArrTransferModel(table.RoleList), addr)
 }
 
 func (roleNode *RoleNode) updateMap() {
@@ -85,4 +93,14 @@ func (roleList RoleListType) getMaxId() int {
 		}
 	}
 	return max
+}
+
+func (table *RoleTable) deleteNode(nodeId int) {
+	for i := 0; i < len(table.RoleList); i++ {
+		if nodeId == table.RoleList[i].Id {
+			table.RoleList = append(table.RoleList[:i], table.RoleList[i+1:]...)
+			break
+		}
+	}
+	delete(table.RoleMap, nodeId)
 }

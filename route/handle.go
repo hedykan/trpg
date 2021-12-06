@@ -199,13 +199,13 @@ func runReturn(w http.ResponseWriter, r *http.Request) {
 	resInput(w, r, nil)
 }
 
-func attrList(w http.ResponseWriter, r *http.Request) {
+func attrNodeList(w http.ResponseWriter, r *http.Request) {
 	query := get(r)
 	roomId, err := strconv.Atoi(query["roomId"])
 	if err != nil {
 		panic(err)
 	}
-	resInput(w, r, con.RoomAttrList(roomId))
+	resInput(w, r, con.RoomAttrNodeList(roomId))
 }
 
 func attrNodeGet(w http.ResponseWriter, r *http.Request) {

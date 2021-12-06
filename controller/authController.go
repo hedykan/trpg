@@ -11,6 +11,11 @@ type AuthRunningNode struct {
 	// 操控角色
 }
 
+type AuthTokenTable struct {
+	AuthTokenList []AuthTokenDetail
+	AuthTokenMap  map[string]*AuthTokenDetail
+}
+
 var AuthTokenList []AuthTokenDetail
 var AuthTokenMap map[string]*AuthTokenDetail
 

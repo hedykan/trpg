@@ -50,7 +50,7 @@ func RouteInit() {
 	http.Handle("/run/now_record_list", mid(runNowRecordList))
 
 	// 属性操作
-	http.Handle("/attr/list", mid(attrList))
+	http.Handle("/attr/node_list", mid(attrNodeList))
 	http.Handle("/attr/node_get", mid(attrNodeGet))
 	// http.Handle("/attr/node_add", mid(attrNodeAdd))
 

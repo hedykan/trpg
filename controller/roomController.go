@@ -40,6 +40,7 @@ func RoomInit() {
 // load/save函数
 
 // 创建房间
+// TODO 新增房间背景，kptoken
 func RoomCreate() {
 	roomId := roomIdCreate(RoomArr) + 1
 	RoomArr = append(RoomArr, Room{
@@ -227,9 +228,10 @@ func RoomRunReturn(roomId int, nodeId int) {
 	go model.RoomSave(RoomTransferModel(*RoomMap[roomId]))
 }
 
+// attr
 // 获取属性列表
-func RoomAttrList(roomId int) []AttrNode {
-	return AttrList(&RoomMap[roomId].Attribute)
+func RoomAttrNodeList(roomId int) []AttrNode {
+	return AttrNodeList(&RoomMap[roomId].Attribute)
 }
 
 // 获取属性节点
@@ -256,6 +258,12 @@ func RoomAttrNodeDelete(roomId int, attrId int) bool {
 	go model.RoomSave(RoomTransferModel(*RoomMap[roomId]))
 	return ok
 }
+
+// role
+// 新增
+// 删除
+// 修改
+// 查询
 
 func roomIdCreate(roomArr []Room) int {
 	max := 0

@@ -27,6 +27,9 @@ func DirCheck(dir string) {
 }
 
 func Test() {
-	RoleNodeAdd(&RoomMap[1].Role, "test", RoomMap[1].Attribute.AttrList)
+	room := RoomMap[1]
+	RoleNodeDelete(&room.Role, 2)
+	room.Role.save(room.RoomId)
+	fmt.Println(room.Role.RoleList)
 	fmt.Println("test")
 }
