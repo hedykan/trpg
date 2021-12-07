@@ -29,6 +29,10 @@ func AuthInit() {
 				RoomId: 1,
 				Role:   "kp",
 			},
+			{
+				RoomId: 2,
+				Role:   "kp",
+			},
 		},
 	}
 	updateAuthTokenMap()

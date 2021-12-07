@@ -32,10 +32,9 @@ type StoryBackground struct {
 	Background string
 }
 
-// 开辟空间后暂时不会被回收
-// var StoryNodeMap map[int]*StoryNode
-// var StoryNodeArr []StoryNode
-// var StoryBackgroundNode StoryBackground
+func StoryBackgroundEdit(backgroundTable *StoryBackground, background string) {
+	backgroundTable.Background = background
+}
 
 // 改为回storytable
 func StoryCreate() []StoryNode {

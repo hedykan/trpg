@@ -16,6 +16,7 @@ func RouteInit() {
 	// 故事
 	// http.Handle("/story/init", mid(storyInit))
 	// http.Handle("/story/load", mid(storyLoad))
+	http.Handle("/story/background_edit", mid(storyBackgroundEdit))
 	http.Handle("/story/list", mid(storyList))
 	http.Handle("/story/get", mid(storyGet))
 	http.Handle("/story/node_add", mid(storyNodeAdd))

@@ -94,6 +94,10 @@ func RoomDelete(roomId int) {
 }
 
 // Story
+func RoomStoryBackgroundEdit(roomId int, background string) {
+	StoryBackgroundEdit(&RoomMap[roomId].Background, background)
+}
+
 // 查询故事
 func RoomStoryList(roomId int) []StoryNode {
 	return RoomMap[roomId].Story.StoryList

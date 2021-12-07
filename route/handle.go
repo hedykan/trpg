@@ -23,6 +23,16 @@ func index(w http.ResponseWriter, r *http.Request) {
 // 	// resInput(w, r, con.StoryLoad(con.StoryNodeArr, con.Addr))
 // }
 
+func storyBackgroundEdit(w http.ResponseWriter, r *http.Request) {
+	var query struct {
+		RoomId     int
+		Background string
+	}
+	postJson(r, &query)
+	con.RoomStoryBackgroundEdit(query.RoomId, query.Background)
+	resInput(w, r, nil)
+}
+
 func storyList(w http.ResponseWriter, r *http.Request) {
 	query := get(r)
 	id, err := strconv.Atoi(query["roomId"])

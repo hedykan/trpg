@@ -34,7 +34,7 @@ func AttrTableCreate() *AttrTable {
 }
 
 // 获取属性列表
-func AttrList(table *AttrTable) []AttrNode {
+func AttrNodeList(table *AttrTable) []AttrNode {
 	return table.AttrList
 }
 
