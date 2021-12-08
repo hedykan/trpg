@@ -1,5 +1,6 @@
 package controller
 
+// 建立用户表
 type AuthTokenDetail struct {
 	Token      string
 	OwnRunning []AuthRunningNode // 当前所属团
@@ -23,7 +24,7 @@ func AuthInit() {
 	AuthTokenMap = make(map[string]*AuthTokenDetail)
 	AuthTokenList = make([]AuthTokenDetail, 1)
 	AuthTokenList[0] = AuthTokenDetail{
-		Token: "13570890160",
+		Token: "test",
 		OwnRunning: []AuthRunningNode{
 			{
 				RoomId: 1,
@@ -69,6 +70,17 @@ func AuthStatus(token string) *AuthTokenDetail {
 	// 当前团
 	// ip
 	return AuthTokenMap[token]
+}
+
+func AuthKpNumGet(token string) int {
+	auth := AuthStatus(token)
+	num := 0
+	for i := 0; i < len(auth.OwnRunning); i++ {
+		if auth.OwnRunning[i].Role == "kp" {
+			num += 1
+		}
+	}
+	return num
 }
 
 func updateAuthTokenMap() {

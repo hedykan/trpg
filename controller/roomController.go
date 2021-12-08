@@ -41,6 +41,7 @@ func RoomInit() {
 
 // 创建房间
 // TODO 新增房间背景，kptoken
+// 按权限建立，每人可建立一间房间
 func RoomCreate() {
 	roomId := roomIdCreate(RoomArr) + 1
 	RoomArr = append(RoomArr, Room{
