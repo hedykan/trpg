@@ -27,6 +27,6 @@ func DirCheck(dir string) {
 }
 
 func Test() {
-	RoomCreate()
-	fmt.Println("test")
+	// RoomCreate()
+	fmt.Println("test function")
 }

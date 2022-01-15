@@ -266,9 +266,53 @@ func RoomAttrNodeDelete(roomId int, attrId int) bool {
 
 // role
 // 新增
+func RoomRoleNodeAdd(roomId int, name string) bool {
+	room, ok := RoomMap[roomId]
+	if ok {
+		RoleNodeAdd(&room.Role, name, room.Attribute.AttrList)
+		return true
+	}
+	return false
+}
+
 // 删除
+func RoomRoleNodeDelete(roomId int, roleId int) bool {
+	room, ok := RoomMap[roomId]
+	if ok {
+		RoleNodeDelete(&room.Role, roleId)
+		return true
+	}
+	return false
+}
+
 // 修改
+func RoomRoleNodeOperate(roomId int, roleId int, attrId int, operate string, num int) bool {
+	room, ok := RoomMap[roomId]
+	if ok {
+		RoleAttrOperate(&room.Role, roleId, attrId, operate, num)
+		return true
+	}
+	return false
+}
+
 // 查询
+func RoomRoleNodeList(roomId int) []RoleNode {
+	room, ok := RoomMap[roomId]
+	if ok {
+		return RoleNodeList(&room.Role)
+	} else {
+		return nil
+	}
+}
+
+func RoomRoleNodeGet(roomId int, roleId int) RoleNode {
+	room, ok := RoomMap[roomId]
+	if ok {
+		return RoleNodeGet(&room.Role, roleId)
+	} else {
+		return RoleNode{}
+	}
+}
 
 func roomIdCreate(roomArr []Room) int {
 	max := 0

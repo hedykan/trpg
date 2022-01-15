@@ -55,6 +55,10 @@ func RouteInit() {
 	http.Handle("/attr/node_get", mid(attrNodeGet))
 	// http.Handle("/attr/node_add", mid(attrNodeAdd))
 
+	// 角色操作
+	http.Handle("/role/node_list", mid(roleNodeList))
+	http.Handle("/role/node_get", mid(roleNodeGet))
+
 	http.Handle("/room/list", mid(roomList))
 }
 

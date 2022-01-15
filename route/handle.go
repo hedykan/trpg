@@ -266,6 +266,28 @@ func attrNodeDelete(w http.ResponseWriter, r *http.Request) {
 	resInput(w, r, con.RoomAttrNodeDelete(roomId, attrId))
 }
 
+func roleNodeList(w http.ResponseWriter, r *http.Request) {
+	query := get(r)
+	roomId, err := strconv.Atoi(query["roomId"])
+	if err != nil {
+		panic(err)
+	}
+	resInput(w, r, con.RoomRoleNodeList(roomId))
+}
+
+func roleNodeGet(w http.ResponseWriter, r *http.Request) {
+	query := get(r)
+	roleId, err := strconv.Atoi(query["roleId"])
+	if err != nil {
+		panic(err)
+	}
+	roomId, err := strconv.Atoi(query["roomId"])
+	if err != nil {
+		panic(err)
+	}
+	resInput(w, r, con.RoomRoleNodeGet(roomId, roleId))
+}
+
 func roomList(w http.ResponseWriter, r *http.Request) {
 	resInput(w, r, con.RoomList())
 }
